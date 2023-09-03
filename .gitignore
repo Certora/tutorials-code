@@ -1,0 +1,13 @@
+# Package specifics
+
+# Mac
+.DS_Store
+
+# Certora
+.certora_internal/
+.certora_recent_jobs.json
+.zip-output-url.txt
+
+# vim
+.*.swp
+.*.swo
