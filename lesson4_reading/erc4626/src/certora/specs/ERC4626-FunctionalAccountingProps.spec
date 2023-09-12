@@ -1,7 +1,7 @@
 import "./ERC4626-MonotonicityInvariant.spec";
 
 //Had to change _ERC20 to __ERC20 as of import that already declares _ERC20. 
-using ERC20 as __ERC20;
+using ERC20Mock as __ERC20;
 
 //This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
@@ -127,4 +127,5 @@ rule redeemProperties(uint256 shares, address receiver, address owner){
     assert assets >= previewAssets;
 }
 
-//Current results: https://prover.certora.com/output/53900/7538cffeb6f5475580378e6b3f25cefd?anonymousKey=a51328c86e7ebd55e0a9bab660fb6dc241ef0cbd
+//Current results: https://prover.certora.com/output/53900/7538cffeb6f5475580378e6b3f25cefd?anonymousKey=a51328c86e7ebd55e0a9bab660fb6dc241ef0cbd//Current results: https://prover.certora.com/output/53900/9bff1a944136468fbd8ae1ec692542f2?anonymousKey=432f0b4234ca29fa80743d112d7579bf60c3440a
+//Current results for Open Zeppelin: https://prover.certora.com/output/53900/82f230b8ac15469abeebc1dbcab64c80?anonymousKey=9cee98e777a96b8d5d26e4604b4a9ea1942d73b6

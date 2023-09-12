@@ -16,6 +16,8 @@ methods{
     function totalSupply() external returns uint256 envfree;
 }
 
+//TODO test this rule on OpenZeppelin with equality on assert.
+
 rule inverseDepositRedeemInFavourForVault(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_owner){
     env e;
     safeAssumptions();
@@ -57,7 +59,7 @@ rule inverseWithdrawMintInFavourForVault(uint256 assets, address mint_receiver, 
 }
 
 
-//TODO: Not sure if this is even a valid property: The rule fails.
+//TODO: Not sure if this is even a valid property....
 rule redeemInOneTransactionIsPreferable(address user, address receiver, uint256 s1, uint256 s2) {
     env e;
 
@@ -80,4 +82,4 @@ rule redeemInOneTransactionIsPreferable(address user, address receiver, uint256 
     assert(redeemed2 <= redeemed1a + redeemed1b);
 }
 
-//Current results: https://prover.certora.com/output/53900/c3da8b5edf6f4561bf13bc12a8f73afc?anonymousKey=30965a0f354b3452eb87d8a35272c68121ce9015
+//Current results: https://prover.certora.com/output/53900/d78afb175b134ae1b55af991011caff5?anonymousKey=810e6e3b5caa8b72aa3173c4937b565d36a6e38b

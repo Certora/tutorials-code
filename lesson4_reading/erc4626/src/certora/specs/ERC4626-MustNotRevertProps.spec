@@ -1,16 +1,6 @@
 
+
 import "./ERC4626-MonotonicityInvariant.spec";
-
-//Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
-using ERC20 as __ERC20;
-
-//This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
-use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
-use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
-
-
 methods{
     function balanceOf(address) external returns uint256 envfree;
     function convertToAssets(uint256) external returns uint256 envfree;
@@ -22,6 +12,14 @@ methods{
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
 }
+
+//ERC4626-Monotonicity declares safeAssumptions(), why is it required to activeley declare the invariants used in safeAssumptions in this file?
+use invariant totalAssetsZeroImpliesTotalSupplyZero;
+use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupply;
+
+
 
 definition nonReveritngFunction(method f) returns bool = 
            f.selector == sig:convertToAssets(uint256).selector
@@ -36,7 +34,6 @@ definition nonReveritngFunction(method f) returns bool =
 
 rule mustNotRevertProps(method f) filtered {f -> nonReveritngFunction(f)}{
     env e;
-
     require(e.msg.value == 0);
     safeAssumptions();
     bool res = callMethodsWithParamenter(e, f);
@@ -47,25 +44,18 @@ function callMethodsWithParamenter(env e, method f)  returns bool {
     uint256 amount;
     address addr;
     if(f.selector == sig:convertToAssets(uint256).selector){
-        //Reasonable assumptions for convertToAssets: No overflow on multiplication and no devision by 0.
-        require (amount * totalAssets() <= max_uint256);
-        require (totalSupply() > 0);
-
+        /**OZ: 
+        We'd need to ensure that totalAssets() + 1 does not overflow....totalSupply() + 10**__decimalsOffset() doesn't overflow and the mulDiv doesn't either
+        function _convertToAssets(uint256 shares, Math.Rounding rounding) internal view virtual returns (uint256) {
+            return shares.mulDiv(totalAssets() + 1, totalSupply() + 10 ** _decimalsOffset(), rounding);
+        }
+        */
         convertToAssets@withrevert(amount);
         return lastReverted;
     } else if(f.selector == sig:convertToShares(uint256).selector){
-        //Reasonable assumptions for convertToShare: No overflow on multiplication and no devision by 0.
-        require (amount * totalSupply() <= max_uint256);
-        require (totalAssets() > 0);
-
         convertToShares@withrevert(amount);
         return lastReverted;
     } else if(f.selector == sig:maxWithdraw(address).selector){
-
-        //Reasonable assumptions for convertToAssets: No overflow on multiplication and no devision by 0.
-        require (balanceOf(addr) * totalAssets() <= max_uint256);
-        require (totalSupply() > 0);
-        
         maxWithdraw@withrevert(addr);
         return lastReverted;
     } else if(f.selector == sig:maxDeposit(address).selector){
@@ -86,4 +76,5 @@ function callMethodsWithParamenter(env e, method f)  returns bool {
     return true;
 }
 
-//Current Results: https://prover.certora.com/output/53900/91ecbf874cc948acae93970617b46246?anonymousKey=34cd5488963f665fc6cbfc19d831c1206d1cce19
+//Current Results: https://prover.certora.com/output/53900/d309d19804ea430da22bfed21fa3dab2?anonymousKey=c8dc63e28bb1d5f2161f021b0332cbd4cbdfc442
+//Current results on Open Zeppelin https://prover.certora.com/output/53900/56ba04402c354671948812c6b58c59ec?anonymousKey=bf80f4cd10de6aebf76c0bea70f6c47e80278290

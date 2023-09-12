@@ -1,5 +1,5 @@
 
-using ERC20 as _ERC20;
+using ERC20Mock as _ERC20;
 
 methods {
     function totalSupply() external returns uint256 envfree;
@@ -11,6 +11,19 @@ methods {
     function previewDeposit(uint256) external returns uint256 envfree;
     function previewRedeem(uint256) external returns uint256 envfree;
     function _ERC20.totalSupply() external returns uint256 envfree;
+    function ERC20._update(address from, address to, uint256 value) internal => updateStub(from, to, value);
+}
+
+function updateStub(address from,  address to ,uint256 amount) {
+    uint256 balanceOfTo = balanceOf(to);
+    uint256 balanceOfFrom = balanceOf(from);
+    uint256 totalSupply = totalSupply();
+    //TODO: verify the assumptions by writing a rule for it.
+    if(to != from){
+        require (balanceOf(to) == require_uint256(balanceOfTo + amount));
+        require (balanceOf(from) == require_uint256(balanceOfFrom - amount));
+        require (require_uint256(totalSupply + amount) == totalSupply());
+    }
 }
 
 function safeAssumptions(){
@@ -51,7 +64,9 @@ rule assetAndShareMonotonicy(){
     assert (receiver != currentContract) => (totalAssetsBefore <= totalAssetsAfter <=> totalSupplyBefore <= totalSupplyAfter), "Monotonicity doesn't hold."; 
 }
 
-
+/**
+* This invariant does not hold for OpenZeppelin. There is a public function mint that allows to increase totalSupply without increasing totalAssets! 
+*/
 invariant totalAssetsZeroImpliesTotalSupplyZero()
     totalAssets() == 0 => totalSupply() == 0
     {
@@ -70,10 +85,10 @@ ghost mathint sumOfBalances {
     init_state axiom sumOfBalances == 0;
 }
 
-hook Sstore balanceOf[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
+hook Sstore _balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalances = sumOfBalances + newValue - oldValue;
 }
-hook Sload uint256 value balanceOf[KEY address auser] STORAGE {
+hook Sload uint256 value _balances[KEY address auser] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to hold.
     require to_mathint(value) <= sumOfBalances;
 }
@@ -85,12 +100,12 @@ ghost mathint sumOfBalancesERC20 {
     init_state axiom sumOfBalancesERC20 == 0;
 }
 
-hook Sstore _ERC20.balanceOf[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
+hook Sstore _ERC20._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC20 = sumOfBalancesERC20 + newValue - oldValue;
     userBalance = newValue;
 }
 
-hook Sload uint256 value _ERC20.balanceOf[KEY address auser] STORAGE {
+hook Sload uint256 value _ERC20._balances[KEY address auser] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to already hold.
     require to_mathint(value) <= sumOfBalancesERC20;
 }
@@ -102,4 +117,4 @@ ghost mathint userBalance {
     init_state axiom userBalance == 0;
 }
 
-//Current results: https://prover.certora.com/output/53900/be641a64bf1d4660abfd9cce3bcaefbc?anonymousKey=8cb85092656a9f2039cbf14cb47f6a2576b9c91f
+//Current results: https://prover.certora.com/output/53900/1c908f0eff9c42518fc6206e42152cd8/?anonymousKey=435376258db9ce72101337c61da0d6e95b45d02f
