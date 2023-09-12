@@ -4,9 +4,11 @@ import "./ERC4626-MonotonicityInvariant.spec";
 using ERC20 as __ERC20;
 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+
 
 
 methods{
@@ -80,4 +82,3 @@ rule redeemInOneTransactionIsPreferable(address user, address receiver, uint256 
     assert(redeemed2 <= redeemed1a + redeemed1b);
 }
 
-//Current results: https://prover.certora.com/output/53900/c3da8b5edf6f4561bf13bc12a8f73afc?anonymousKey=30965a0f354b3452eb87d8a35272c68121ce9015

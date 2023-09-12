@@ -6,9 +6,11 @@ using ERC20 as __ERC20;
 
 //This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+
 
 
 methods{
@@ -85,5 +87,3 @@ function callMethodsWithParamenter(env e, method f)  returns bool {
     //Should be unreachable. 
     return true;
 }
-
-//Current Results: https://prover.certora.com/output/53900/91ecbf874cc948acae93970617b46246?anonymousKey=34cd5488963f665fc6cbfc19d831c1206d1cce19

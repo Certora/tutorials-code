@@ -5,9 +5,10 @@ using ERC20 as __ERC20;
 
 //This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
 
 methods {
     function __ERC20.balanceOf(address) external returns uint256 envfree;
@@ -126,5 +127,3 @@ rule redeemProperties(uint256 shares, address receiver, address owner){
 
     assert assets >= previewAssets;
 }
-
-//Current results: https://prover.certora.com/output/53900/7538cffeb6f5475580378e6b3f25cefd?anonymousKey=a51328c86e7ebd55e0a9bab660fb6dc241ef0cbd

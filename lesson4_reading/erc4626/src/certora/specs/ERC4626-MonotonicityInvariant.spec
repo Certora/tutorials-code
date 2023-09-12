@@ -15,8 +15,10 @@ methods {
 
 function safeAssumptions(){
     requireInvariant totalAssetsZeroImpliesTotalSupplyZero;
-    requireInvariant sumOfBalancesEqualsTotalSupply;
+    requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
+    requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+    requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
 }
 
 rule assetAndShareMonotonicy(){
@@ -57,25 +59,28 @@ invariant totalAssetsZeroImpliesTotalSupplyZero()
     {
 
         preserved {
-            requireInvariant sumOfBalancesEqualsTotalSupply;
+            requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
             requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
-            requireInvariant singleUserBalanceSmallerThanTotalSupply;
+            requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+            requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
         }
 }
 
-invariant sumOfBalancesEqualsTotalSupply()
-    sumOfBalances == to_mathint(totalSupply());
+invariant sumOfBalancesEqualsTotalSupplyERC4626()
+    sumOfBalancesERC4626 == to_mathint(totalSupply());
 
-ghost mathint sumOfBalances {
-    init_state axiom sumOfBalances == 0;
+ghost mathint sumOfBalancesERC4626 {
+    init_state axiom sumOfBalancesERC4626 == 0;
 }
 
 hook Sstore balanceOf[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
-    sumOfBalances = sumOfBalances + newValue - oldValue;
+    sumOfBalancesERC4626 = sumOfBalancesERC4626 + newValue - oldValue;
+    userBalanceERC4626 = newValue;
 }
+
 hook Sload uint256 value balanceOf[KEY address auser] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to hold.
-    require to_mathint(value) <= sumOfBalances;
+    require to_mathint(value) <= sumOfBalancesERC4626;
 }
 
 invariant sumOfBalancesEqualsTotalSupplyERC20()
@@ -87,7 +92,7 @@ ghost mathint sumOfBalancesERC20 {
 
 hook Sstore _ERC20.balanceOf[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC20 = sumOfBalancesERC20 + newValue - oldValue;
-    userBalance = newValue;
+    userBalanceERC20 = newValue;
 }
 
 hook Sload uint256 value _ERC20.balanceOf[KEY address auser] STORAGE {
@@ -95,11 +100,18 @@ hook Sload uint256 value _ERC20.balanceOf[KEY address auser] STORAGE {
     require to_mathint(value) <= sumOfBalancesERC20;
 }
 
-invariant singleUserBalanceSmallerThanTotalSupply()
-    userBalance <= sumOfBalancesERC20;
+invariant singleUserBalanceSmallerThanTotalSupplyERC20()
+    userBalanceERC20 <= sumOfBalancesERC20;
 
-ghost mathint userBalance {
-    init_state axiom userBalance == 0;
+ghost mathint userBalanceERC20 {
+    init_state axiom userBalanceERC20 == 0;
 }
 
-//Current results: https://prover.certora.com/output/53900/be641a64bf1d4660abfd9cce3bcaefbc?anonymousKey=8cb85092656a9f2039cbf14cb47f6a2576b9c91f
+
+invariant singleUserBalanceSmallerThanTotalSupplyERC4626()
+    userBalanceERC4626 <= sumOfBalancesERC4626;
+
+ghost mathint userBalanceERC4626 {
+    init_state axiom userBalanceERC4626 == 0;
+}
+

@@ -6,9 +6,11 @@ using ERC20 as __ERC20;
 
 //This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+
 
 methods{
     function __ERC20.allowance(address,address) external returns uint256 envfree;
@@ -158,5 +160,3 @@ rule vulnerableToInflationAttack(address attacker, address victim, address depos
     
     assert assetsAttackerPreAttack >= assetsAttackerPostAttack, "The attacker gained assets.";
 }
-
-//Current results: https://prover.certora.com/output/53900/478fe72720584bc6af003f4f9bf6e4c9?anonymousKey=56d469faee96a177b669d70fe199a2e318e2c714

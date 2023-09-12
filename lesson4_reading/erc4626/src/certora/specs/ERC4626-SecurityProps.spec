@@ -4,9 +4,10 @@ import "./ERC4626-MonotonicityInvariant.spec";
 using ERC20 as __ERC20;
 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
 
 
 methods {
@@ -73,5 +74,3 @@ rule decimalsOfUnderlyingVaultShouldBeLarger(uint256 shares, address receiver, a
     
     assert decimals >= assetDecimals, "Decimals of underlying ERC20 should be larger than ERC4626 decimals."; 
 }
-
-//Current results: https://prover.certora.com/output/53900/07ab0436f2424a539eb23cd32429c81c?anonymousKey=8ca00e5e8b0af8d70a7f6bb862e3ab7332c10d92
