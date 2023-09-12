@@ -11,25 +11,42 @@ methods {
     function previewDeposit(uint256) external returns uint256 envfree;
     function previewRedeem(uint256) external returns uint256 envfree;
     function _ERC20.totalSupply() external returns uint256 envfree;
-    function ERC20._update(address from, address to, uint256 value) internal => updateStub(from, to, value);
+    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
 }
 
-function updateStub(address from,  address to ,uint256 amount) {
-    uint256 balanceOfTo = balanceOf(to);
-    uint256 balanceOfFrom = balanceOf(from);
-    uint256 totalSupply = totalSupply();
-    //TODO: verify the assumptions by writing a rule for it.
-    if(to != from){
-        require (balanceOf(to) == require_uint256(balanceOfTo + amount));
-        require (balanceOf(from) == require_uint256(balanceOfFrom - amount));
-        require (require_uint256(totalSupply + amount) == totalSupply());
-    }
-}
 
 function safeAssumptions(){
     requireInvariant totalAssetsZeroImpliesTotalSupplyZero;
-    requireInvariant sumOfBalancesEqualsTotalSupply;
+    requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
+    requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
+    requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+}
+
+
+function updateSafe(address from, address to, uint256 amount){
+
+    uint256 balanceOfTo = balanceOf(to);
+    uint256 balanceOfFrom = balanceOf(from);
+    uint256 totalSupply = totalSupply();
+
+    
+    //transfer or mint case
+    if(to != 0 && from != to){
+        require(balanceOfTo >= amount);
+    }
+    //transfer or burn case
+    if(from != 0 && from != to){
+        require(balanceOfFrom >= amount);
+    }
+    //mint case
+    if(from == 0 && to != 0){
+        require(totalSupply >= amount);
+    }
+    //burn case
+    if(from != 0 && to == 0){
+        require(totalSupply >= amount);
+    }
 }
 
 rule assetAndShareMonotonicy(){
@@ -72,25 +89,27 @@ invariant totalAssetsZeroImpliesTotalSupplyZero()
     {
 
         preserved {
-            requireInvariant sumOfBalancesEqualsTotalSupply;
+            requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
             requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
-            requireInvariant singleUserBalanceSmallerThanTotalSupply;
+            requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
+            requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
         }
 }
 
-invariant sumOfBalancesEqualsTotalSupply()
-    sumOfBalances == to_mathint(totalSupply());
+invariant sumOfBalancesEqualsTotalSupplyERC4626()
+    sumOfBalancesERC4626 == to_mathint(totalSupply());
 
-ghost mathint sumOfBalances {
-    init_state axiom sumOfBalances == 0;
+ghost mathint sumOfBalancesERC4626 {
+    init_state axiom sumOfBalancesERC4626 == 0;
 }
 
-hook Sstore _balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
-    sumOfBalances = sumOfBalances + newValue - oldValue;
+hook Sstore ERC4626Mock._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
+    sumOfBalancesERC4626 = sumOfBalancesERC4626 + newValue - oldValue;
+    userBalanceERC4626 = newValue;
 }
-hook Sload uint256 value _balances[KEY address auser] STORAGE {
+hook Sload uint256 value ERC4626Mock._balances[KEY address auser] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to hold.
-    require to_mathint(value) <= sumOfBalances;
+    require to_mathint(value) <= sumOfBalancesERC4626;
 }
 
 invariant sumOfBalancesEqualsTotalSupplyERC20()
@@ -102,7 +121,7 @@ ghost mathint sumOfBalancesERC20 {
 
 hook Sstore _ERC20._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC20 = sumOfBalancesERC20 + newValue - oldValue;
-    userBalance = newValue;
+    userBalanceERC20 = newValue;
 }
 
 hook Sload uint256 value _ERC20._balances[KEY address auser] STORAGE {
@@ -110,11 +129,18 @@ hook Sload uint256 value _ERC20._balances[KEY address auser] STORAGE {
     require to_mathint(value) <= sumOfBalancesERC20;
 }
 
-invariant singleUserBalanceSmallerThanTotalSupply()
-    userBalance <= sumOfBalancesERC20;
+invariant singleUserBalanceSmallerThanTotalSupplyERC20()
+    userBalanceERC20 <= sumOfBalancesERC20;
 
-ghost mathint userBalance {
-    init_state axiom userBalance == 0;
+ghost mathint userBalanceERC20 {
+    init_state axiom userBalanceERC20 == 0;
+}
+
+invariant singleUserBalanceSmallerThanTotalSupplyERC4626()
+    userBalanceERC4626 <= sumOfBalancesERC4626;
+
+ghost mathint userBalanceERC4626 {
+    init_state axiom userBalanceERC4626 == 0;
 }
 
 //Current results: https://prover.certora.com/output/53900/1c908f0eff9c42518fc6206e42152cd8/?anonymousKey=435376258db9ce72101337c61da0d6e95b45d02f

