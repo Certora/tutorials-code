@@ -16,7 +16,6 @@ methods {
 
 
 function safeAssumptions(){
-    requireInvariant totalAssetsZeroImpliesTotalSupplyZero;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
