@@ -91,8 +91,8 @@ invariant totalAssetsZeroImpliesTotalSupplyZero()
         preserved {
             requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
             requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
-            requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
             requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+            requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
         }
 }
 
@@ -143,4 +143,3 @@ ghost mathint userBalanceERC4626 {
     init_state axiom userBalanceERC4626 == 0;
 }
 
-//Current results: https://prover.certora.com/output/53900/1c908f0eff9c42518fc6206e42152cd8/?anonymousKey=435376258db9ce72101337c61da0d6e95b45d02f

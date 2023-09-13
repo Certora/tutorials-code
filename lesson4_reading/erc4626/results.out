@@ -1,0 +1,14 @@
+-e Results for ./src/certora/conf/certoraRun-FunctionalAccountingProps.conf can be found at:
+https://prover.certora.com/output/53900/cda4693ea49b4ccf804a9c36a4b714cf?anonymousKey=e140a7ee9ddc089f02c4fce1c7ea7068a914da3e
+-e Results for ./src/certora/conf/certoraRun-InflationAttack.conf can be found at:
+https://prover.certora.com/output/53900/03465b8029a04eeca44d223b88e44c4d?anonymousKey=a1b940370c5c1dee359929b22d707d1daeb51a07
+-e Results for ./src/certora/conf/certoraRun-MonotonicityInvariant.conf can be found at:
+https://prover.certora.com/output/53900/c76405d1767f4122ad0e0dd9c16543e7?anonymousKey=3ba63b18dd0b64fee2ea1dcc0772a95c357b85b6
+-e Results for ./src/certora/conf/certoraRun-MustNotRevertProps.conf can be found at:
+https://prover.certora.com/output/53900/154925817dcf4a42b67bd2e4893eabd5?anonymousKey=182f5e64096bf9d3c1b78dc4c2e235df4b699727
+-e Results for ./src/certora/conf/certoraRun-RedeemUsingApprovalProps.conf can be found at:
+https://prover.certora.com/output/53900/30d5ffa88c7c42e285124c5b99529f97?anonymousKey=a33a2ab8ea27848cb2a7ac5d34ac8ae6983d0b96
+-e Results for ./src/certora/conf/certoraRun-RoundingProps.conf can be found at:
+https://prover.certora.com/output/53900/0286f159d4e34f2f944a368a439160ab?anonymousKey=a3425a67032f62b18e69e490e74896fc36f5d6a2
+-e Results for ./src/certora/conf/certoraRun-SecurityProps.conf can be found at:
+https://prover.certora.com/output/53900/09688a10ef8b453bba659ee5d86f2f45?anonymousKey=7bbfb60130f84061fe4cbd68732bf128a6ae4fa6

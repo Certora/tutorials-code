@@ -4,9 +4,10 @@ import "./ERC4626-MonotonicityInvariant.spec";
 using ERC20 as __ERC20;
 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
 
 
 methods {
@@ -65,7 +66,7 @@ rule redeemMustDecreaseTotalAssets(uint256 shares, address receiver, address own
 
 //`decimals()` should be larger than or equal to `asset.decimals()`
 rule decimalsOfUnderlyingVaultShouldBeLarger(uint256 shares, address receiver, address owner){
-    //TODO: Rule fails. The method call to decimals returns a HAVOC'd value. Still the solver should be able to reason that ERC4626.decimals == ERC20.decimals as of the call to the super constructor.
+    //TODO: Rule fails. The method call to decimals returns a HAVOC'd value. Still the solver should be able to reason that ERC4626.decimals == ERC20.decimals as of the call to the super constructor. Don't understand why.
     safeAssumptions();
 
     uint8 assetDecimals = __ERC20.decimals();
@@ -73,5 +74,3 @@ rule decimalsOfUnderlyingVaultShouldBeLarger(uint256 shares, address receiver, a
     
     assert decimals >= assetDecimals, "Decimals of underlying ERC20 should be larger than ERC4626 decimals."; 
 }
-
-//Current results:  https://prover.certora.com/output/53900/37a8a72cd1f6426383fa9d0d884dff39?anonymousKey=20d731f3d50ddececfa308670b0848ee616e4e58

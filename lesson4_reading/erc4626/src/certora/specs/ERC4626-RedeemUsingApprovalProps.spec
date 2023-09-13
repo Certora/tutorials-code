@@ -116,5 +116,3 @@ rule thirdPartyRedeemRevertCase(uint256 shares, address receiver, address owner)
 
 invariant balanceOfERC20EqualToTotalAsset()
     totalAssets() == _ERC20.balanceOf(currentContract);
-
-//Current results: https://prover.certora.com/output/53900/69d41bd6444149c1870a74cd96f8588b?anonymousKey=97da89d85f8dcdb2bef2f2cd5349b1e5342ada40

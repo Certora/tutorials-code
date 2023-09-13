@@ -2,7 +2,7 @@
 import "./ERC4626-MonotonicityInvariant.spec";
 
 //Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
-using ERC20Mock as __ERC20;
+using ERC20 as __ERC20;
 
 //This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
@@ -10,6 +10,7 @@ use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
 use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
 use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+
 
 methods{
     function __ERC20.allowance(address,address) external returns uint256 envfree;
@@ -44,7 +45,7 @@ rule simpleVersionOfVulnerableAttack(uint256 assets, address deposit_receiver, a
 
     uint256 shares = deposit(e, assets, deposit_receiver);
 
-    //In the inflationAttack there are 2 steps that we don't model here! This cannot really work....
+    //In the inflationAttack there are 2 steps that we don't model here! 
 
     uint256 receivedAssets = redeem(e, shares, redeem_receiver, redeem_ownver);
     assert(receivedAssets <= assets);
@@ -65,6 +66,7 @@ rule vulnerableToInflationAttack(address attacker, address victim, address depos
     //require forall address x. balanceOf(x) <= totalSupply();
     //Doesn't work
     //require forall address y. __ERC20.balanceOf(y) <= __ERC20.totalSupply();
+    safeAssumptions();
     uint256 oneEther;
     uint256 oneWei;
 
@@ -158,6 +160,3 @@ rule vulnerableToInflationAttack(address attacker, address victim, address depos
     
     assert assetsAttackerPreAttack >= assetsAttackerPostAttack, "The attacker gained assets.";
 }
-
-//Current results: https://prover.certora.com/output/53900/478fe72720584bc6af003f4f9bf6e4c9?anonymousKey=56d469faee96a177b669d70fe199a2e318e2c714
-//Current result on Open Zeppelin: https://prover.certora.com/output/53900/482a564d0bde481cbdfac0ce0702e1a5?anonymousKey=3346e1373095201ac1b0c3c0ae985c11b94e51a6

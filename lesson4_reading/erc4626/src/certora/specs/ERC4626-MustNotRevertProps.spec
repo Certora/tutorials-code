@@ -1,6 +1,19 @@
 
 
 import "./ERC4626-MonotonicityInvariant.spec";
+
+//Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
+using ERC20 as __ERC20;
+
+//This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
+use invariant totalAssetsZeroImpliesTotalSupplyZero;
+use invariant sumOfBalancesEqualsTotalSupplyERC4626;
+use invariant sumOfBalancesEqualsTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
+use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+
+
+
 methods{
     function balanceOf(address) external returns uint256 envfree;
     function convertToAssets(uint256) external returns uint256 envfree;
@@ -75,6 +88,3 @@ function callMethodsWithParamenter(env e, method f)  returns bool {
     //Should be unreachable. 
     return true;
 }
-
-//Current Results: https://prover.certora.com/output/53900/d309d19804ea430da22bfed21fa3dab2?anonymousKey=c8dc63e28bb1d5f2161f021b0332cbd4cbdfc442
-//Current results on Open Zeppelin https://prover.certora.com/output/53900/56ba04402c354671948812c6b58c59ec?anonymousKey=bf80f4cd10de6aebf76c0bea70f6c47e80278290
