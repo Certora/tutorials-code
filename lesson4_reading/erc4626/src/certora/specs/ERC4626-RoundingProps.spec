@@ -13,14 +13,39 @@ use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
 
 methods{
     function balanceOf(address) external returns uint256 envfree;
+    function __ERC20.balanceOf(address) external returns uint256 envfree;
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
 }
 
+function assumeBalaneEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
+    mathint totalSupply = totalSupply();
+    mathint balanceOfAddr1 = balanceOf(addr1);
+    mathint balanceOfAddr2 = balanceOf(addr2);
+    mathint balanceOfAddr3 = balanceOf(addr3);
+    mathint balanceOfAddr4 = balanceOf(addr4);
+
+    require totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr3 + balanceOfAddr4;
+}
+
+function assumeBalaneEqualSumManualERC20_4(address addr1,address addr2,address addr3, address addr4){
+    mathint totalSupply = __ERC20.totalSupply();
+    mathint balanceOfAddr1 = __ERC20.balanceOf(addr1);
+    mathint balanceOfAddr2 = __ERC20.balanceOf(addr2);
+    mathint balanceOfAddr3 = __ERC20.balanceOf(addr3);
+    mathint balanceOfAddr4 = __ERC20.balanceOf(addr4);
+
+    require totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr3 + balanceOfAddr4;
+}
+    
+
+
 rule inverseDepositRedeemInFavourForVault(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_owner){
     env e;
     safeAssumptions();
+    assumeBalaneEqualSumManualERC4626_4(deposit_receiver, redeem_receiver, redeem_owner, e.msg.sender);
+    assumeBalaneEqualSumManualERC20_4(deposit_receiver, redeem_receiver, redeem_owner, e.msg.sender);
 
     uint256 shares = deposit(e, assets, deposit_receiver);
     uint256 redeemedAssets = redeem(e, shares, redeem_receiver, redeem_owner);
@@ -31,6 +56,9 @@ rule inverseDepositRedeemInFavourForVault(uint256 assets, address deposit_receiv
 rule inverseRedeemDepositInFavourForVault(uint256 shares, address deposit_receiver, address redeem_receiver, address redeem_owner){
     env e;
     safeAssumptions();
+    assumeBalaneEqualSumManualERC4626_4(deposit_receiver, redeem_receiver, redeem_owner, e.msg.sender);
+    assumeBalaneEqualSumManualERC20_4(deposit_receiver, redeem_receiver, redeem_owner, e.msg.sender);
+    
 
     uint256 redeemedAssets = redeem(e, shares, redeem_receiver, redeem_owner);
     uint256 depositedShares = deposit(e, redeemedAssets, deposit_receiver);
@@ -41,6 +69,8 @@ rule inverseRedeemDepositInFavourForVault(uint256 shares, address deposit_receiv
 rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     safeAssumptions();
+    assumeBalaneEqualSumManualERC4626_4(mint_receiver, withdraw_receiver, withdraw_owner, e.msg.sender);
+    assumeBalaneEqualSumManualERC20_4(mint_receiver, withdraw_receiver, withdraw_owner, e.msg.sender);
 
     uint256 assets = mint(e, shares, mint_receiver);
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
@@ -51,6 +81,8 @@ rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, 
 rule inverseWithdrawMintInFavourForVault(uint256 assets, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     safeAssumptions();
+    assumeBalaneEqualSumManualERC4626_4(mint_receiver, withdraw_receiver, withdraw_owner, e.msg.sender);
+    assumeBalaneEqualSumManualERC20_4(mint_receiver, withdraw_receiver, withdraw_owner, e.msg.sender);
 
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
     uint256 mintedAssets = mint(e, withdrawnShares, mint_receiver);
