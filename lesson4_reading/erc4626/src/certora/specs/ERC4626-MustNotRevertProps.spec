@@ -3,7 +3,7 @@
 import "./ERC4626-MonotonicityInvariant.spec";
 
 //Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
-using ERC20 as __ERC20;
+using ERC20Mock as __ERC20;
 
 //This is counter-intuitive: why we need to import invariants that should be loaded when calling safeAssumptions()? 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
@@ -25,13 +25,6 @@ methods{
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
 }
-
-//ERC4626-Monotonicity declares safeAssumptions(), why is it required to activeley declare the invariants used in safeAssumptions in this file?
-use invariant totalAssetsZeroImpliesTotalSupplyZero;
-use invariant sumOfBalancesEqualsTotalSupply;
-use invariant sumOfBalancesEqualsTotalSupplyERC20;
-use invariant singleUserBalanceSmallerThanTotalSupply;
-
 
 
 definition nonReveritngFunction(method f) returns bool = 

@@ -1,7 +1,7 @@
 import "./ERC4626-MonotonicityInvariant.spec";
 
 //Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
-using ERC20 as __ERC20;
+using ERC20Mock as __ERC20;
 
 use invariant totalAssetsZeroImpliesTotalSupplyZero;
 use invariant sumOfBalancesEqualsTotalSupplyERC4626;

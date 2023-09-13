@@ -1,4 +1,4 @@
-using ERC20 as _ERC20;
+using ERC20Mock as _ERC20;
 
 methods {
     function _ERC20.balanceOf(address) external returns uint256 envfree;

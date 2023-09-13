@@ -11,18 +11,30 @@ methods {
     function previewDeposit(uint256) external returns uint256 envfree;
     function previewRedeem(uint256) external returns uint256 envfree;
     function _ERC20.totalSupply() external returns uint256 envfree;
-    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
+    function _ERC20.balanceOf(address) external returns uint256 envfree;
+   // function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
 }
 
 
 function safeAssumptions(){
+    address x;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+    requireInvariant mirrorIsCorrectERC4626(x);
+    requireInvariant mirrorIsCorrectERC20(x);
 }
 
 
+function safeAssumptionsERC20() {
+    address x;
+    requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
+    requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
+    requireInvariant mirrorIsCorrectERC20(x);
+}
+
+//TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
 function updateSafe(address from, address to, uint256 amount){
 
     uint256 balanceOfTo = balanceOf(to);
@@ -105,10 +117,12 @@ ghost mathint sumOfBalancesERC4626 {
 hook Sstore ERC4626Mock._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC4626 = sumOfBalancesERC4626 + newValue - oldValue;
     userBalanceERC4626 = newValue;
+    balanceOfMirroredERC4626[user] = newValue;
 }
-hook Sload uint256 value ERC4626Mock._balances[KEY address auser] STORAGE {
+hook Sload uint256 value ERC4626Mock._balances[KEY address user] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to hold.
     require to_mathint(value) <= sumOfBalancesERC4626;
+    require value == balanceOfMirroredERC4626[user];
 }
 
 invariant sumOfBalancesEqualsTotalSupplyERC20()
@@ -121,11 +135,13 @@ ghost mathint sumOfBalancesERC20 {
 hook Sstore _ERC20._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC20 = sumOfBalancesERC20 + newValue - oldValue;
     userBalanceERC20 = newValue;
+    balanceOfMirroredERC20[user] = newValue;
 }
 
-hook Sload uint256 value _ERC20._balances[KEY address auser] STORAGE {
+hook Sload uint256 value _ERC20._balances[KEY address user] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to already hold.
     require to_mathint(value) <= sumOfBalancesERC20;
+    require value == balanceOfMirroredERC20[user];
 }
 
 invariant singleUserBalanceSmallerThanTotalSupplyERC20()
@@ -142,3 +158,17 @@ ghost mathint userBalanceERC4626 {
     init_state axiom userBalanceERC4626 == 0;
 }
 
+ghost mapping(address => uint256) balanceOfMirroredERC4626 {
+    init_state axiom forall address a. (balanceOfMirroredERC4626[a] == 0);
+}
+
+ghost mapping(address => uint256) balanceOfMirroredERC20 {
+    init_state axiom forall address a. (balanceOfMirroredERC20[a] == 0);
+}
+
+invariant mirrorIsCorrectERC20(address x)
+    balanceOfMirroredERC20[x] == _ERC20.balanceOf(x);
+
+
+invariant mirrorIsCorrectERC4626(address x)
+    balanceOfMirroredERC4626[x] == balanceOf(x);
