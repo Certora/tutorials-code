@@ -19,14 +19,15 @@ methods{
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
- //   require(res * denominator) <= x * y;
-  //  require((res + 1) * denominator) > x * y;
+    require(res * denominator) <= x * y;
+    require((res + 1) * denominator) > x * y;
 /*
     require x <= denominator;  
     require res <= y;  
     require x == 0 => res == 0;    
     require denominator > 0;*/
-    return require_uint256(x * y / denominator);
+    return res;
+ //   return require_uint256(x * y / denominator);
 }
 
 
