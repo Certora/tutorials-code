@@ -43,7 +43,7 @@ ghost uint256 lastCallConvertToAssets_SharesParameter{
 function previewWithdrawSummary(uint256 assets) returns uint256 {
     lastCallConvertToShares_AssetsParameter = assets;
     uint256 convertedShares = previewWithdraw(assets);
-    require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
+    //require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
     return convertedShares;
 }
 
@@ -51,7 +51,7 @@ function previewMintSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
     uint256 convertedAssets =  previewMint(shares);
     
-    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
+    //require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
 }
 
