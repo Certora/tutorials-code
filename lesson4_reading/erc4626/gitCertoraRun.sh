@@ -5,5 +5,5 @@ certoraURL=$(echo $certoraOutput | sed -n 's/.*\(https:\/\/prover.certora.com\/o
 
 git add -A
 
-git commit -m "Results for run: $certoraURL"
+git commit -m "Results for run: $certoraURL with arguments $@"
 echo $certoraURL

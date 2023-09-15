@@ -16,8 +16,8 @@ methods{
 
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
-    //require(res * denominator) <= x * y;
-    //require((res + 1) * denominator) > x * y;
+    require(res * denominator) <= x * y;
+    require((res + 1) * denominator) > x * y;
 
     require x <= denominator;  
     require res <= y;  
@@ -41,7 +41,12 @@ function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,addres
     require (addr2 == addr3 && addr2 != addr1 && addr2 != addr4 && addr1 != addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr4;
     require (addr2 == addr4 && addr2 != addr1 && addr2 != addr3 && addr1 != addr3) => totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr3;
     require (addr3 == addr4 && addr3 != addr1 && addr3 != addr2 && addr1 != addr2) => totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr3;
-    
+
+    //Cases two are equal and the other two as well.
+    require (addr1 == addr2 && addr3 == addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr3;
+    require (addr1 == addr3 && addr2 == addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr2;
+    require (addr2 == addr3 && addr1 == addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr2;
+
     //Cases three are same
     require (addr1 == addr2 && addr2 == addr3 && addr1 != addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr4; //4 differs
     require (addr1 == addr2 && addr2 == addr4 && addr1 != addr3) => totalSupply == balanceOfAddr1 + balanceOfAddr3; //3 differs
@@ -68,6 +73,11 @@ function assumeBalanceEqualSumManualERC20_4(address addr1,address addr2,address 
     require (addr2 == addr3 && addr2 != addr1 && addr2 != addr4 && addr1 != addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr4;
     require (addr2 == addr4 && addr2 != addr1 && addr2 != addr3 && addr1 != addr3) => totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr3;
     require (addr3 == addr4 && addr3 != addr1 && addr3 != addr2 && addr1 != addr2) => totalSupply == balanceOfAddr1 + balanceOfAddr2 + balanceOfAddr3;
+
+    //Cases two are equal and the other two as well.
+    require (addr1 == addr2 && addr3 == addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr3;
+    require (addr1 == addr3 && addr2 == addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr2;
+    require (addr2 == addr3 && addr1 == addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr2;
     
     //Cases three are same
     require (addr1 == addr2 && addr2 == addr3 && addr1 != addr4) => totalSupply == balanceOfAddr1 + balanceOfAddr4; //4 differs
@@ -97,4 +107,10 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
+}
+
+
+rule convertToAssetsMonotone(){
+    uint256 x;
+    uint256 y;
 }
