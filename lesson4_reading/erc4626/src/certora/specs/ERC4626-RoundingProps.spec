@@ -11,6 +11,8 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
+    function convertToShares(uint256 assets) external returns uint256 envfree;
+    function convertToShares(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
     function convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
     function convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
