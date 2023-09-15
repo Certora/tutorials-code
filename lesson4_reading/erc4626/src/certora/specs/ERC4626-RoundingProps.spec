@@ -92,7 +92,7 @@ function assumeBalanceEqualSumManualERC20_4(address addr1,address addr2,address 
     mathint totalSupply = __ERC20.totalSupply();
 
     if(addr1 != currentContract && addr2 != currentContract  && addr3 != currentContract && addr4 != currentContract){
-        totalSupply = totalSupply - balanceOf(currentContract);
+        totalSupply = totalSupply - __ERC20.balanceOf(currentContract);
     }
     mathint balanceOfAddr1 = __ERC20.balanceOf(addr1);
     mathint balanceOfAddr2 = __ERC20.balanceOf(addr2);
