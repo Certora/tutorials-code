@@ -12,31 +12,38 @@ methods {
     function previewRedeem(uint256) external returns uint256 envfree;
     function _ERC20.totalSupply() external returns uint256 envfree;
     function _ERC20.balanceOf(address) external returns uint256 envfree;
-   // function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
+    function  Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
+    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
 }
 
 
 function safeAssumptions(){
-    address x;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC4626;
-    requireInvariant mirrorIsCorrectERC4626(x);
-    requireInvariant mirrorIsCorrectERC20(x);
 }
 
+function balaceMirrorsAreCorrect(address x) {
+    requireInvariant mirrorIsCorrectERC20(x);
+    requireInvariant mirrorIsCorrectERC4626(x);
+}
 
 function safeAssumptionsERC20() {
-    address x;
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
-    requireInvariant mirrorIsCorrectERC20(x);
+}
+
+function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
+    uint256 res;
+    require(res * denominator) <= x * y;
+    require(res * denominator) > x * y - 1;
+    return res;
 }
 
 //TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
 function updateSafe(address from, address to, uint256 amount){
-
     uint256 balanceOfTo = balanceOf(to);
     uint256 balanceOfFrom = balanceOf(from);
     uint256 totalSupply = totalSupply();
