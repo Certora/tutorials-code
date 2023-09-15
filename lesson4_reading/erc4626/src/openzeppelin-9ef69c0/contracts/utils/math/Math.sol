@@ -205,9 +205,9 @@ library Math {
      */
     function mulDiv(uint256 x, uint256 y, uint256 denominator, Rounding rounding) internal pure returns (uint256) {
         uint256 result = mulDiv(x, y, denominator);
-       /* if (unsignedRoundsUp(rounding) && mulmod(x, y, denominator) > 0) {
+        if (unsignedRoundsUp(rounding) && mulmod(x, y, denominator) > 0) {
             result += 1;
-        }*/
+        }
         return result;
     }
 

@@ -162,7 +162,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
      */
     function transferFrom(address from, address to, uint256 value) public virtual returns (bool) {
         address spender = _msgSender();
-     //   _spendAllowance(from, spender, value);
+        _spendAllowance(from, spender, value);
         _transfer(from, to, value);
         return true;
     }
@@ -226,10 +226,13 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
      * NOTE: This function is not virtual, {_update} should be overridden instead.
      */
     function _transfer(address from, address to, uint256 value) internal {
-        //_update(from, to, value);
-         uint256 fromBalance = _balances[from];
-        _balances[from] = fromBalance - value;
-        _balances[to] += value;
+        if (from == address(0)) {
+            revert ERC20InvalidSender(address(0));
+        }
+        if (to == address(0)) {
+            revert ERC20InvalidReceiver(address(0));
+        }
+        _update(from, to, value);
     }
 
     /**
@@ -277,15 +280,10 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
      * NOTE: This function is not virtual, {_update} should be overridden instead.
      */
     function _mint(address account, uint256 value) internal {
-        
-        
-        // Overflow check required: The rest of the code assumes that totalSupply never overflows
-        _totalSupply += value;
-        
-        unchecked {
-            // Overflow not possible: balance + value is at most totalSupply, which we know fits into a uint256.
-            _balances[account] += value;
+        if (account == address(0)) {
+            revert ERC20InvalidReceiver(address(0));
         }
+        _update(address(0), account, value);
     }
 
     /**
@@ -297,22 +295,10 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
      * NOTE: This function is not virtual, {_update} should be overridden instead
      */
     function _burn(address account, uint256 value) internal {
-
-        uint256 fromBalance = _balances[account];
-        if (fromBalance < value) {
-            revert ERC20InsufficientBalance(address(0), fromBalance, value);
+        if (account == address(0)) {
+            revert ERC20InvalidSender(address(0));
         }
-        unchecked {
-            // Overflow not possible: value <= fromBalance <= totalSupply.
-            _balances[account] = fromBalance - value;
-        }
-
-        unchecked {
-            // Overflow not possible: value <= totalSupply or value <= fromBalance <= totalSupply.
-            _totalSupply -= value;
-        }
-    
-
+        _update(account, address(0), value);
     }
 
     /**
@@ -382,10 +368,5 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
                 _approve(owner, spender, currentAllowance - value, false);
             }
         }
-    }
-
-
-     function wrapperUpdate(address from, address to, uint256 value) external {
-        _update(from, to, value);
     }
 }
