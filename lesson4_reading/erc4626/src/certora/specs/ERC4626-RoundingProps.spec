@@ -14,8 +14,8 @@ methods{
     function previewWithdraw(uint256 assets) external returns uint256 envfree;
     function previewMint(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    function previewWithdraw(uint256 assets) external returns uint256 => previewWithdrawSummary(assets);
-    function previewMint(uint256 shares) external returns uint256 => previewMintSummary(shares);
+    function previewWithdraw(uint256 assets) internal returns uint256 => previewWithdrawSummary(assets);
+    function previewMint(uint256 shares) internal returns uint256 => previewMintSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
