@@ -12,20 +12,20 @@ methods{
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
     function previewWithdraw(uint256 assets) external returns uint256 envfree;
-    function previewMint(uint256 shares) external returns uint256 envfree;
+    function previewRedeem(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    //function previewWithdraw(uint256 assets) internal returns uint256 => previewWithdrawSummary(assets);
-    //function previewMint(uint256 shares) internal returns uint256 => previewMintSummary(shares);
+    function previewWithdraw(uint256 assets) internal returns uint256 => previewWithdrawSummary(assets);
+    function previewRedeem(uint256 shares) internal returns uint256 => previewRedeemSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
-    require(res * denominator) <= x * y;
-    require((res + 1) * denominator) > x * y;
-/*
+//    require(res * denominator) <= x * y;
+//    require((res + 1) * denominator) > x * y;
+
     require x <= denominator;  
     require res <= y;  
     require x == 0 => res == 0;    
-    require denominator > 0;*/
+    require denominator > 0;
     return res;
     //return require_uint256(x * y / denominator);
 }
@@ -43,15 +43,15 @@ ghost uint256 lastCallConvertToAssets_SharesParameter{
 function previewWithdrawSummary(uint256 assets) returns uint256 {
     lastCallConvertToShares_AssetsParameter = assets;
     uint256 convertedShares = previewWithdraw(assets);
-    //require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
+    require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
     return convertedShares;
 }
 
-function previewMintSummary(uint256 shares) returns uint256 {
+function previewRedeemSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
-    uint256 convertedAssets =  previewMint(shares);
+    uint256 convertedAssets =  previewRedeem(shares);
     
-   // require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
+    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
 }
 
@@ -123,7 +123,7 @@ function assumeBalanceEqualSumManualERC20_4(address addr1,address addr2,address 
     
     require addr1 == addr2 && addr2 == addr3 && addr3 == addr4 => totalSupply == balanceOfAddr1;
 }
-    
+    /*
 rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
@@ -146,7 +146,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
-}
+}*/
 
 
 rule inverseRedeemWithdrawInFavourForVault(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
