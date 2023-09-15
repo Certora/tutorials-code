@@ -1,6 +1,7 @@
 
 //Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
 using ERC20Mock as __ERC20;
+using ERC4626 as _ERC4626;
 
 
 
@@ -11,9 +12,11 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
+    function previewWithdraw(uint256 assets) external returns uint256 envfree;
+    function previewMint(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    function _convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
-    function _convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
+    function previewWithdraw(uint256 assets) external returns uint256 => previewWithdrawSummary(assets);
+    function previewMint(uint256 shares) internal returns uint256 => previewMintSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
@@ -37,16 +40,16 @@ ghost uint256 lastCallConvertToAssets_SharesParameter{
     init_state axiom lastCallConvertToAssets_SharesParameter == 0;
 }
 
-function convertToSharesSummary(uint256 assets) returns uint256 {
+function previewWithdrawSummary(uint256 assets) returns uint256 {
     lastCallConvertToShares_AssetsParameter = assets;
-    uint256 convertedShares = _convertToShares(assets);
+    uint256 convertedShares = previewWithdraw(assets);
     require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
     return convertedShares;
 }
 
-function convertToAssetsSummary(uint256 shares) returns uint256 {
+function previewMintSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
-    uint256 convertedAssets =  _convertToAssets(shares);
+    uint256 convertedAssets =  previewMint(shares);
     
     require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
