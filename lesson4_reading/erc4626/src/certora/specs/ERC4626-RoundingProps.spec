@@ -17,7 +17,6 @@ methods{
     function convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
     function convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
 }
-
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
    // require(res * denominator) <= x * y;
@@ -30,14 +29,43 @@ function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint25
     return res;
 }
 
+
+//The ghost is supposed to cover the equation: assets >= converToAssets(convertToShares(assets)). 
+ghost uint256 lastCallConvertToShares_AssetsParameter{
+    init_state axiom lastCallConvertToShares_AssetsParameter == 0;
+}
+//The ghost is supposed to cover the equation: shares >= convertToShares(convertToAssets(shares))
+ghost uint256 lastCallConvertToAssets_SharesParameter{
+    init_state axiom lastCallConvertToAssets_SharesParameter == 0;
+}
+
+
 function convertToSharesSummary(uint256 assets) returns uint256 {
+    lastCallConvertToShares_AssetsParameter = assets;
+    uint256 convertedShares = convertToShares(assets);
+    require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
+    return convertedShares;
+}
+
+function convertToAssetsSummary(uint256 shares) returns uint256 {
+    lastCallToConvertToAssets_SharesParameter = shares;
+    uint256 convertedAssets = convertToAssets(shares);
+    
+    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedShares);
+    return convertedAssets;
+}
+
+
+
+function convertToSharesSummary(uint256 assets) returns uint256 {
+    //Using early proved rules (from bootcamp)
     uint256 shares = convertToShares(assets);
     require assets >= convertToAssets(shares);
     return shares;
 }
 
-
 function convertToAssetsSummary(uint256 shares) returns uint256 {
+    //Using early proved rules (from bootcamp)
     uint256 assets = convertToAssets(shares);
     require shares >= convertToShares(assets);
     return assets;
