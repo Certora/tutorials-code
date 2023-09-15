@@ -1,6 +1,6 @@
 certoraOutput=$(certoraRun "$@")
 
-echo $certoraOutput
+echo "$certoraOutput"
 certoraURL=$(echo $certoraOutput | sed -n 's/.*\(https:\/\/prover.certora.com\/output\/\)/\1/p')
 
 git add -A
