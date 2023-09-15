@@ -93,11 +93,17 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
     assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
 
+    //Dismiss allowance case
+    require(e.msg.sender == withdraw_owner);
+
     //Make all non zero to avoid unnecessary cases.
     require(e.msg.sender != 0);
     require(mint_receiver != 0);
     require(withdraw_owner != 0);
     require(withdraw_receiver != 0);
+
+    require(e.msg.sender != currentContract);
+    require(e.msg.sender != ERC20);
 
 
     uint256 assets = mint(e, shares, mint_receiver);
