@@ -19,8 +19,8 @@ methods{
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
-    require(res * denominator) <= x * y;
-    require((res + 1) * denominator) > x * y;
+ //   require(res * denominator) <= x * y;
+  //  require((res + 1) * denominator) > x * y;
 
     require x <= denominator;  
     require res <= y;  
@@ -50,7 +50,7 @@ function previewMintSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
     uint256 convertedAssets =  previewMint(shares);
     
-   // require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
+    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
 }
 
