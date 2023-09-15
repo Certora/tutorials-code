@@ -18,7 +18,7 @@ methods{
     //function previewRedeem(uint256 shares) internal returns uint256 => previewRedeemSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
-    uint256 res;
+   /* uint256 res;
 //    require(res * denominator) <= x * y;
 //    require((res + 1) * denominator) > x * y;
 
@@ -26,8 +26,8 @@ function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint25
     require res <= y;  
     require x == 0 => res == 0;    
     require denominator > 0;
-    return res;
-    //return require_uint256(x * y / denominator);
+    return res;*/
+    return require_uint256(x * y / denominator);
 }
 
 
@@ -123,7 +123,7 @@ function assumeBalanceEqualSumManualERC20_4(address addr1,address addr2,address 
     
     require addr1 == addr2 && addr2 == addr3 && addr3 == addr4 => totalSupply == balanceOfAddr1;
 }
-    /*
+
 rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
@@ -146,7 +146,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
-}*/
+}
 
 
 rule inverseRedeemWithdrawInFavourForVault(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
