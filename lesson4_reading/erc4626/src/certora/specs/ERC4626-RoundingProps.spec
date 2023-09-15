@@ -103,7 +103,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     require(withdraw_receiver != 0);
 
     require(e.msg.sender != currentContract);
-    require(e.msg.sender != ERC20);
+    require(e.msg.sender != __ERC20);
 
 
     uint256 assets = mint(e, shares, mint_receiver);
