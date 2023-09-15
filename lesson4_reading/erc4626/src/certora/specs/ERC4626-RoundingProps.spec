@@ -1,6 +1,7 @@
 
 //Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
 using ERC20Mock as __ERC20;
+using ERC4626 as __ERC4626;
 
 
 
@@ -11,11 +12,9 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
-    function convertToShares(uint256 assets) external returns uint256 envfree;
-    function convertToAssets(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    function convertToShares(uint256 assets) external returns uint256 => convertToSharesSummary(assets);
-    function convertToAssets(uint256 shares) external returns uint256 => convertToAssetsSummary(shares);
+    function __ERC4626._convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
+    function __ERC4626._convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
@@ -41,14 +40,14 @@ ghost uint256 lastCallConvertToAssets_SharesParameter{
 
 function convertToSharesSummary(uint256 assets) returns uint256 {
     lastCallConvertToShares_AssetsParameter = assets;
-    uint256 convertedShares = convertToShares(assets);
+    uint256 convertedShares = _convertToShares(assets);
     require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
     return convertedShares;
 }
 
 function convertToAssetsSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
-    uint256 convertedAssets = convertToAssets(shares);
+    uint256 convertedAssets =  _convertToAssets(shares);
     
     require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
