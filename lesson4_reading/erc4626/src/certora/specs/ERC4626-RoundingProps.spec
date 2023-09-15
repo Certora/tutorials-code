@@ -50,7 +50,7 @@ function previewMintSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
     uint256 convertedAssets =  previewMint(shares);
     
-    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
+   // require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
 }
 
