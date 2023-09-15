@@ -15,7 +15,7 @@ methods{
     function previewMint(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
     function previewWithdraw(uint256 assets) external returns uint256 => previewWithdrawSummary(assets);
-    function previewMint(uint256 shares) internal returns uint256 => previewMintSummary(shares);
+    function previewMint(uint256 shares) external returns uint256 => previewMintSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
@@ -42,7 +42,7 @@ ghost uint256 lastCallConvertToAssets_SharesParameter{
 function previewWithdrawSummary(uint256 assets) returns uint256 {
     lastCallConvertToShares_AssetsParameter = assets;
     uint256 convertedShares = previewWithdraw(assets);
-    //require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
+    require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
     return convertedShares;
 }
 
@@ -50,7 +50,7 @@ function previewMintSummary(uint256 shares) returns uint256 {
     lastCallConvertToAssets_SharesParameter = shares;
     uint256 convertedAssets =  previewMint(shares);
     
-    //require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
+    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
 }
 
