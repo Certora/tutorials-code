@@ -45,7 +45,7 @@ import {Math} from "../../../utils/math/Math.sol";
  * To learn more, check out our xref:ROOT:erc4626.adoc[ERC-4626 guide].
  * ====
  */
-contract ERC4626 is ERC20, IERC4626 {
+abstract contract ERC4626 is ERC20, IERC4626 {
     using Math for uint256;
 
     IERC20 private immutable _asset;

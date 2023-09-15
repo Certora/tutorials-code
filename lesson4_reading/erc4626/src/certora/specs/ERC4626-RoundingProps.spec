@@ -1,7 +1,6 @@
 
 //Had to change _ERC20 to ___ERC20 as of import that already declares __ERC20.
 using ERC20Mock as __ERC20;
-using ERC4626 as __ERC4626;
 
 
 
@@ -13,8 +12,8 @@ methods{
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    function __ERC4626._convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
-    function __ERC4626._convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
+    function _convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
+    function _convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
