@@ -18,7 +18,7 @@ methods{
     //function previewMint(uint256 shares) internal returns uint256 => previewMintSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
-    uint256 res;
+   /* uint256 res;
     require(res * denominator) <= x * y;
     require((res + 1) * denominator) > x * y;
 /*
@@ -26,8 +26,8 @@ function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint25
     require res <= y;  
     require x == 0 => res == 0;    
     require denominator > 0;*/
-    return res;
- //   return require_uint256(x * y / denominator);
+    //return res;
+    return require_uint256(x * y / denominator);
 }
 
 
