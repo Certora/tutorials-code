@@ -11,7 +11,9 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
-    function  Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+    function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+    function convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
+    function convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
 }
 
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
@@ -25,6 +27,20 @@ function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint25
     require denominator > 0;
     return res;
 }
+
+function convertToSharesSummary(uint256 assets) returns uint256 {
+    uint256 shares = convertToShares(assets);
+    require assets >= convertToAssets(shares);
+    return shares;
+}
+
+
+function convertToAssetsSummary(uint256 shares) returns uint256 {
+    uint256 assets = convertToAssets(shares);
+    require shares >= convertToShares(assets);
+    return assets;
+}
+
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
     mathint totalSupply = totalSupply();
     mathint balanceOfAddr1 = balanceOf(addr1);
@@ -112,3 +128,6 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
 }
+
+
+rule convertToAssetsConvertToShares()
