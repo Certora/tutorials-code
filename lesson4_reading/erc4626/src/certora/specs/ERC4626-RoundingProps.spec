@@ -11,12 +11,13 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
+    function  Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
 }
 
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
-   // require(res * denominator) <= x * y;
-   // require((res + 1) * denominator) > x * y;
+    require(res * denominator) <= x * y;
+    require((res + 1) * denominator) > x * y;
 
     require x <= denominator;  
     require res <= y;  
