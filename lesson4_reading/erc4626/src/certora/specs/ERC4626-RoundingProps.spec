@@ -39,7 +39,6 @@ ghost uint256 lastCallConvertToAssets_SharesParameter{
     init_state axiom lastCallConvertToAssets_SharesParameter == 0;
 }
 
-
 function convertToSharesSummary(uint256 assets) returns uint256 {
     lastCallConvertToShares_AssetsParameter = assets;
     uint256 convertedShares = convertToShares(assets);
@@ -48,27 +47,11 @@ function convertToSharesSummary(uint256 assets) returns uint256 {
 }
 
 function convertToAssetsSummary(uint256 shares) returns uint256 {
-    lastCallToConvertToAssets_SharesParameter = shares;
+    lastCallConvertToAssets_SharesParameter = shares;
     uint256 convertedAssets = convertToAssets(shares);
     
-    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedShares);
+    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
     return convertedAssets;
-}
-
-
-
-function convertToSharesSummary(uint256 assets) returns uint256 {
-    //Using early proved rules (from bootcamp)
-    uint256 shares = convertToShares(assets);
-    require assets >= convertToAssets(shares);
-    return shares;
-}
-
-function convertToAssetsSummary(uint256 shares) returns uint256 {
-    //Using early proved rules (from bootcamp)
-    uint256 assets = convertToAssets(shares);
-    require shares >= convertToShares(assets);
-    return assets;
 }
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
