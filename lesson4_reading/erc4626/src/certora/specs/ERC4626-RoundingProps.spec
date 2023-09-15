@@ -14,8 +14,8 @@ methods{
     function convertToShares(uint256 assets) external returns uint256 envfree;
     function convertToAssets(uint256 shares) external returns uint256 envfree;
     function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    function convertToShares(uint256 assets) internal returns uint256 => convertToSharesSummary(assets);
-    function convertToAssets(uint256 shares) internal returns uint256 => convertToAssetsSummary(shares);
+    function convertToShares(uint256 assets) external returns uint256 => convertToSharesSummary(assets);
+    function convertToAssets(uint256 shares) external returns uint256 => convertToAssetsSummary(shares);
 }
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
     uint256 res;
