@@ -92,8 +92,6 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     require(withdraw_receiver != 0);
 
 
-    require(e.msg.sender == withdraw_owner);
-
     uint256 assets = mint(e, shares, mint_receiver);
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
     
