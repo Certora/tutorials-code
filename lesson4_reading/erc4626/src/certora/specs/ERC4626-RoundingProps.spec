@@ -128,6 +128,3 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
 }
-
-
-rule convertToAssetsConvertToShares()
