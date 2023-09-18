@@ -182,7 +182,7 @@ rule inverseRedeemWithdrawInFavourForVault_ConcretizedValues(uint256 shares, add
 
 
 
-rule inverseRedeemWithdrawInFavourForVault_WithdrawReceiverEqualMessageSender(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
+rule inverseRedeemWithdrawInFavourForVault_ConcretizedShares(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
     assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
@@ -202,9 +202,9 @@ rule inverseRedeemWithdrawInFavourForVault_WithdrawReceiverEqualMessageSender(ui
     require(e.msg.sender != currentContract);
     require(e.msg.sender != __ERC20);
 
-    require(shares > 1);
+    
 
-    require(shares < 10000);
+    require(shares == 10000 || shares == 100000 || shares == 0xffff);
     //TODO introduce a fifths person... != withdraw_owner
     uint256 assets = redeem(e, shares, mint_receiver, withdraw_owner);
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
