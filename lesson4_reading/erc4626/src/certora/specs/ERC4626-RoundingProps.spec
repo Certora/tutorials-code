@@ -130,7 +130,8 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
 
     //Dismiss allowance case
-    require(e.msg.sender == withdraw_owner);
+    //"Activating" allowance case by removing this requires
+    //require(e.msg.sender == withdraw_owner);
 
     //Make all non zero to avoid unnecessary cases.
     require(e.msg.sender != 0);
