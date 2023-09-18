@@ -56,7 +56,7 @@ jobs:
       - name: Verify rule ${{ matrix.params.name }}
         run: >
           message="$(git log -n 1 --pretty=format:'CI ${{matrix.params.name}} %h .... %s')";
-          certoraRun \
+          cd lesson4_reading/erc4626/ && certoraRun \
             ${{ matrix.params.command }} \
             --msg "$(echo $message | sed 's/[^a-zA-Z0-9., _-]/ /g')"
         env:
@@ -97,5 +97,5 @@ jobs:
           #- {name: transferSpec,                 command: 'ERC20.conf --rule transferSpec'}
           #- {name: generalRulesOnERC20, command: 'generalRules_ERC20.conf --debug'}
           #- {name: generalRulesOnVAULT, command: 'generalRules_VAULT.conf --debug'}
-          - {name: RulesForERC4626, command: 'lesson4_reading/erc4626/src/certora/conf-openzeppelin/certoraRun-RoundingProps.conf --debug'}
+          - {name: RulesForERC4626, command: 'src/certora/conf-openzeppelin/certoraRun-RoundingProps.conf --debug'}
 
