@@ -97,6 +97,6 @@ jobs:
           #- {name: transferSpec,                 command: 'ERC20.conf --rule transferSpec'}
           #- {name: generalRulesOnERC20, command: 'generalRules_ERC20.conf --debug'}
           #- {name: generalRulesOnVAULT, command: 'generalRules_VAULT.conf --debug'}
-          - {name: RulesForERC4626, command: 'src/certora/conf/certoraRun-RoundingProps.conf --debug'}
-          - {name: RulesForERC4626, command: 'src/certora/conf-openzeppelin/certoraRun-RoundingProps.conf --debug'}
+          - {name: RulesForERC4626, command: 'src/certora/conf/certoraRun-RoundingProps.conf'}
+          - {name: RulesForERC4626, command: 'src/certora/conf-openzeppelin/certoraRun-RoundingProps.conf'}
 

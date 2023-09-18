@@ -165,7 +165,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     uint256 assetBalanceAfter = __ERC20.balanceOf(e.msg.sender);
     uint256 sharesBalanceAfter = balanceOf(e.msg.sender);
 
-    assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
+    assert shares >= withdrawnShares && assetBalanceBefore >= assetBalanceAfter, "User cannot gain assets using deposit / redeem combination.";
 }
 
 
