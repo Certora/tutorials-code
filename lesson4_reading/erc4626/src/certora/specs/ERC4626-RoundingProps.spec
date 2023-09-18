@@ -23,6 +23,7 @@ function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint25
 //    require((res + 1) * denominator) > x * y;
 */
 
+    require(res * denominator) <= x * y;
     require((res + 1) * denominator) > x * y;
     require x <= denominator;  
     require res <= y;  
