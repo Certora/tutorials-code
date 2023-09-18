@@ -105,6 +105,8 @@ Properties that may not be testable
 
 Other Properties
 ------
+* `withdraw` and `redeem` are semantically equivalent when the inputs are converted using the respective `convert` method.
+* `mint` and `deposit` are semantically equivalent when the inputs are converted using the respective `convert` method.
 * Deposit increases the number of shares by mint. Shares minted should be proportional to the increase of the balance of the vault. 
   ```
   a: amount to deposit

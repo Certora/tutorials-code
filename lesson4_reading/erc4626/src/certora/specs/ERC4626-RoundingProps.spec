@@ -148,6 +148,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     require(withdraw_receiver != __ERC20);
     require(withdraw_owner != currentContract);
     require(withdraw_receiver != currentContract);
+    require(withdraw_receiver == e.msg.sender);
 
     //Loading values to displaying them in Certora variable view.
     uint256 assetBalanceBefore = __ERC20.balanceOf(e.msg.sender);
