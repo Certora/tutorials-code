@@ -151,7 +151,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
 
     //Loading values to displaying them in Certora variable view.
     uint256 assetBalanceBefore = __ERC20.balanceOf(e.msg.sender);
-    uint256 sharesBalanceAfter = balanceOf(e.msg.sender);
+    uint256 sharesBalanceBefore = balanceOf(e.msg.sender);
 
     uint256 assets = mint(e, shares, mint_receiver);
 

@@ -144,10 +144,27 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
 
     require(e.msg.sender != currentContract);
     require(e.msg.sender != __ERC20);
+    require(withdraw_owner != __ERC20);
+    require(withdraw_receiver != __ERC20);
+    require(withdraw_owner != currentContract);
+    require(withdraw_receiver != currentContract);
 
+    //Loading values to displaying them in Certora variable view.
+    uint256 assetBalanceBefore = __ERC20.balanceOf(e.msg.sender);
+    uint256 sharesBalanceBefore = balanceOf(e.msg.sender);
 
     uint256 assets = mint(e, shares, mint_receiver);
+
+    //Loading values to displaying them in Certora variable view.
+    uint256 assetBalanceIntermediate = __ERC20.balanceOf(e.msg.sender);
+    uint256 sharesBalanceIntermediate = balanceOf(e.msg.sender);
+    
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
+
+    //Loading values to displaying them in Certora variable view.
+    uint256 assetBalanceAfter = __ERC20.balanceOf(e.msg.sender);
+    uint256 sharesBalanceAfter = balanceOf(e.msg.sender);
+
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
 }
