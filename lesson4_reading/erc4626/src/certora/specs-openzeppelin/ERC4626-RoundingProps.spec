@@ -149,6 +149,7 @@ rule inverseMintWithdrawInFavourForVault_LessRestrictive(uint256 shares, address
     require(withdraw_owner != currentContract);
     require(withdraw_receiver != currentContract);
 
+    require(withdraw_owner == e.msg.sender);
     require(withdraw_receiver == e.msg.sender);
     require(mint_receiver == e.msg.sender);
 
