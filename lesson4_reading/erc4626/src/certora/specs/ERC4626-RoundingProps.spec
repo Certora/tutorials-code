@@ -229,6 +229,8 @@ rule inverseRedeemWithdrawInFavourForVault_WithdrawReceiverEqualMessageSender(ui
     require(e.msg.sender != currentContract);
     require(e.msg.sender != __ERC20);
 
+    require(shares == 1000);
+
     //TODO introduce a fifths person... != withdraw_owner
     uint256 assets = redeem(e, shares, mint_receiver, withdraw_owner);
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
@@ -255,6 +257,8 @@ rule inverseRedeemWithdrawInFavourForVault_FixReceivers(uint256 shares, address 
 
     require(e.msg.sender != currentContract);
     require(e.msg.sender != __ERC20);
+
+    require(shares == 100);
 
     //TODO introduce a fifths person... != withdraw_owner
     uint256 assets = redeem(e, shares, mint_receiver, withdraw_owner);
