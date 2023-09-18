@@ -157,6 +157,9 @@ rule inverseRedeemWithdrawInFavourForVault(uint256 shares, address mint_receiver
 
     //Dismiss allowance case
     require(e.msg.sender == withdraw_owner);
+    //Further restrict arguments: Now every address is equal to e.msg.sender.
+    require(e.msg.sender == mint_receiver);
+    require(e.msg.sender == withdraw_receiver);
 
     //Make all non zero to avoid unnecessary cases.
     require(e.msg.sender != 0);
