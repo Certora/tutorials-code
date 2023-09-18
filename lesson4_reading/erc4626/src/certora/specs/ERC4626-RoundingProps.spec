@@ -232,3 +232,30 @@ rule inverseRedeemWithdrawInFavourForVault_WithdrawReceiverEqualMessageSender(ui
     
     assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
 }
+
+rule inverseRedeemWithdrawInFavourForVault_FixReceivers(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
+    env e;
+    assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
+    assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
+
+    //Dismiss allowance case
+    //require(e.msg.sender == withdraw_owner);
+    //Further restrict arguments: Now every address is equal to e.msg.sender.
+    require(e.msg.sender == mint_receiver);
+    require(e.msg.sender == withdraw_receiver);
+
+    //Make all non zero to avoid unnecessary cases.
+    require(e.msg.sender != 0);
+    require(mint_receiver != 0);
+    require(withdraw_owner != 0);
+    require(withdraw_receiver != 0);
+
+    require(e.msg.sender != currentContract);
+    require(e.msg.sender != __ERC20);
+
+    //TODO introduce a fifths person... != withdraw_owner
+    uint256 assets = redeem(e, shares, mint_receiver, withdraw_owner);
+    uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
+    
+    assert shares >= withdrawnShares, "User cannot gain assets using deposit / redeem combination.";
+}
