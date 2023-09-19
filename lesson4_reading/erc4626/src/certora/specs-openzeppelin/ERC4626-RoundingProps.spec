@@ -20,6 +20,11 @@ methods{
     function totalSupply() external returns uint256 envfree;
     function previewWithdraw(uint256 assets) external returns uint256 envfree;
     function previewRedeem(uint256 shares) external returns uint256 envfree;
+    function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+}
+
+function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
+    return require_uint256(x * y / denominator);
 }
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
