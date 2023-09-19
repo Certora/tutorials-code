@@ -106,7 +106,6 @@ function assumeBalanceEqualSumManualERC20_4(address addr1,address addr2,address 
 
 rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
-    safeAssumptions();
 
     assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
     assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
