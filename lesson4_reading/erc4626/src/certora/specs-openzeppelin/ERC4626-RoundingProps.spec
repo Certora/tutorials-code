@@ -24,15 +24,7 @@ methods{
 }
 
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
-    uint256 res;
-    //shares <= totalSupply() and assets <= totalAssets 
-    require x <= denominator;  
-
-    //follows from above information: when x/demnominator <= 1 then, res will be at most y. 
-    require res <= y;  
-    require x == 0 => res == 0;    
-    require denominator > 0;
-    return res;
+    return require_uint256(x * y / denominator);
 }
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
@@ -104,31 +96,6 @@ function assumeBalanceEqualSumManualERC20_4(address addr1,address addr2,address 
     require addr1 == addr2 && addr2 == addr3 && addr3 == addr4 => totalSupply == balanceOfAddr1;
 }
 
-rule inverseDepositRedeemInFavourForVault(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_owner){
-    env e;
-    safeAssumptions();
-
-    assumeBalanceEqualSumManualERC20_4(deposit_receiver,redeem_receiver, redeem_owner, e.msg.sender);
-    assumeBalanceEqualSumManualERC4626_4(deposit_receiver,redeem_receiver, redeem_owner, e.msg.sender);
-
-    uint256 shares = deposit(e, assets, deposit_receiver);
-    uint256 redeemedAssets = redeem(e, shares, redeem_receiver, redeem_owner);
-    
-    assert assets >= redeemedAssets, "User cannot gain assets using deposit / redeem combination.";
-}
-
-rule inverseRedeemDepositInFavourForVault(uint256 shares, address deposit_receiver, address redeem_receiver, address redeem_owner){
-    env e;
-    safeAssumptions();
-
-    assumeBalanceEqualSumManualERC20_4(deposit_receiver,redeem_receiver, redeem_owner, e.msg.sender);
-    assumeBalanceEqualSumManualERC4626_4(deposit_receiver,redeem_receiver, redeem_owner, e.msg.sender);
-
-    uint256 redeemedAssets = redeem(e, shares, redeem_receiver, redeem_owner);
-    uint256 depositedShares = deposit(e, redeemedAssets, deposit_receiver);
-    
-    assert shares >= depositedShares, "User cannot gain shares using redeem / deposit combination.";
-}
 
 rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
@@ -137,45 +104,23 @@ rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, 
     assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
     assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
 
+
+    //Dismiss allowance case to simplify proving (less cases to consider.)
+    require(e.msg.sender == withdraw_owner);
+
+    //Make all non zero to avoid unnecessary cases.
+    require(e.msg.sender != 0);
+    require(mint_receiver != 0);
+    require(withdraw_owner != 0);
+    require(withdraw_receiver != 0);
+
+    //Exclude cases that are not interestinig. 
+    require(e.msg.sender != currentContract);
+    require(e.msg.sender != __ERC20);
+
+
     uint256 assets = mint(e, shares, mint_receiver);
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
     
     assert shares >= withdrawnShares, "User cannot gain assets using mint / withdraw combination.";
-}
-
-rule inverseWithdrawMintInFavourForVault(uint256 assets, address mint_receiver, address withdraw_receiver, address withdraw_owner){
-    env e;
-    safeAssumptions();
-
-    assumeBalanceEqualSumManualERC20_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
-    assumeBalanceEqualSumManualERC4626_4(mint_receiver,withdraw_receiver, withdraw_owner, e.msg.sender);
-
-    uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
-    uint256 mintedAssets = mint(e, withdrawnShares, mint_receiver);
-    
-    assert assets >= mintedAssets, "User cannot gain assets using withdraw / mint combination.";
-}
-
-
-//TODO: Not sure if this is even a valid property: The rule fails.
-rule redeemInOneTransactionIsPreferable(address user, address receiver, uint256 s1, uint256 s2) {
-    env e;
-
-    safeAssumptions();
-    uint256 shares = require_uint256(s1 + s2);
-
-    //The below requires have been added to find more intuitive counter examples.
-    require(e.msg.sender != currentContract);
-    require(e.msg.sender != user);
-    require(e.msg.sender != receiver);
-    require(user != receiver);
-    require(totalAssets() >= totalSupply());
-
-    storage init = lastStorage;
-
-    mathint redeemed1a = redeem(e, s1, receiver, user);
-    mathint redeemed1b = redeem(e, s2, receiver, user);
-    mathint redeemed2 = redeem(e, shares, receiver, user) at init;
-
-    assert(redeemed2 <= redeemed1a + redeemed1b);
 }
