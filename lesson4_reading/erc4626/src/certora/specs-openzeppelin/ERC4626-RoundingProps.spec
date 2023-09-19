@@ -111,7 +111,9 @@ rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, 
     require(e.msg.sender != currentContract);
     require(e.msg.sender != __ERC20);
 
-    require(shares == 10000);
+    require(e.msg.sender == 2);
+    require(mint_receiver == 3);
+    require(withdraw_receiver == 4);
 
     uint256 assets = mint(e, shares, mint_receiver);
     uint256 withdrawnShares = withdraw(e, assets, withdraw_receiver, withdraw_owner);
