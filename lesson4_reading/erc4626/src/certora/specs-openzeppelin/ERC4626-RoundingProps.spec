@@ -18,35 +18,51 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
-    function previewWithdraw(uint256 assets) external returns uint256 envfree;
-    function previewRedeem(uint256 shares) external returns uint256 envfree;
 
-    function ERC20._update(address from, address to, uint256 amount) internal => updateSafe(from, to, amount);
+    function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+
+    function previewWithdraw(uint256 assets) external returns uint256 envfree => previewWithdrawSummary(assets);
+    function previewMint(uint256 shares) external returns uint256 envfree => previewMintSummary(shares);
+} 
+
+function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
+    uint256 res;
+    //shares <= totalSupply() and assets <= totalAssets 
+    require x <= denominator;  
+
+    //follows from above information: when x/demnominator <= 1 then, res will be at most y. 
+    require res <= y;  
+    require x == 0 => res == 0;    
+    require denominator > 0;
+    return res;
 }
 
-//TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
-function updateSafe(address from, address to, uint256 amount){
-    uint256 balanceOfTo = balanceOf(to);
-    uint256 balanceOfFrom = balanceOf(from);
-    uint256 totalSupply = totalSupply();
-    
-    //transfer or mint case
-    if(to != 0 && from != to){
-        require(balanceOfTo >= amount);
-    }
-    //transfer or burn case
-    if(from != 0 && from != to){
-        require(balanceOfFrom >= amount);
-    }
-    //mint case
-    if(from == 0 && to != 0){
-        require(totalSupply >= amount);
-    }
-    //burn case
-    if(from != 0 && to == 0){
-        require(totalSupply >= amount);
-    }
+//The ghost is supposed to cover the equation: assets >= converToAssets(convertToShares(assets)). 
+ghost uint256 lastCallConvertToShares_AssetsParameter{
+    init_state axiom lastCallConvertToShares_AssetsParameter == 0;
 }
+//The ghost is supposed to cover the equation: shares >= convertToShares(convertToAssets(shares))
+ghost uint256 lastCallConvertToAssets_SharesParameter{
+    init_state axiom lastCallConvertToAssets_SharesParameter == 0;
+}
+
+function previewWithdrawSummary(uint256 assets) returns uint256 {
+    //previewWithdraw calls convertToShares
+    lastCallConvertToShares_AssetsParameter = assets;
+    uint256 convertedShares = previewWithdraw(assets);
+    require(lastCallConvertToAssets_SharesParameter != 0 => lastCallConvertToAssets_SharesParameter >= convertedShares);
+    return convertedShares;
+}
+
+function previewMintSummary(uint256 shares) returns uint256 {
+    //previewWithdraw calls convertToAssets
+    lastCallConvertToAssets_SharesParameter = shares;
+    uint256 convertedAssets =  previewMint(shares);
+    require(lastCallConvertToShares_AssetsParameter != 0 => lastCallConvertToShares_AssetsParameter >= convertedAssets);
+    return convertedAssets;
+}
+
+
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
     mathint totalSupply = totalSupply();
