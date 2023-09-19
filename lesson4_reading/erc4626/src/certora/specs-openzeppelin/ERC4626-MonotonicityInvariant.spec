@@ -1,5 +1,5 @@
 
-using ERC20Mock as _ERC20;
+using ERC20 as _ERC20;
 
 methods {
     function totalSupply() external returns uint256 envfree;
@@ -12,9 +12,6 @@ methods {
     function previewRedeem(uint256) external returns uint256 envfree;
     function _ERC20.totalSupply() external returns uint256 envfree;
     function _ERC20.balanceOf(address) external returns uint256 envfree;
-    function  Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
-    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
-    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
 }
 
 
@@ -33,13 +30,6 @@ function balaceMirrorsAreCorrect(address x) {
 function safeAssumptionsERC20() {
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
-}
-
-function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
-    uint256 res;
-    require(res * denominator) <= x * y;
-    require(res * denominator) > x * y - 1;
-    return res;
 }
 
 //TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
