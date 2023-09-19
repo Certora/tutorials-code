@@ -24,7 +24,10 @@ methods{
 }
 
 function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
-    return require_uint256(x * y / denominator);
+    uint256 res;
+    require(res * denominator) <= x * y;
+    require((res + 1) * denominator) > x * y;
+    return res;
 }
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
