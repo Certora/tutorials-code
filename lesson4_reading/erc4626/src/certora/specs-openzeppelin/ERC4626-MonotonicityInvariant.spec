@@ -32,31 +32,6 @@ function safeAssumptionsERC20() {
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
 }
 
-//TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
-function updateSafe(address from, address to, uint256 amount){
-    uint256 balanceOfTo = balanceOf(to);
-    uint256 balanceOfFrom = balanceOf(from);
-    uint256 totalSupply = totalSupply();
-
-    
-    //transfer or mint case
-    if(to != 0 && from != to){
-        require(balanceOfTo >= amount);
-    }
-    //transfer or burn case
-    if(from != 0 && from != to){
-        require(balanceOfFrom >= amount);
-    }
-    //mint case
-    if(from == 0 && to != 0){
-        require(totalSupply >= amount);
-    }
-    //burn case
-    if(from != 0 && to == 0){
-        require(totalSupply >= amount);
-    }
-}
-
 rule assetAndShareMonotonicy(){
 
     safeAssumptions();
