@@ -1,5 +1,5 @@
 
-using ERC20 as _ERC20;
+using ERC20Mock as _ERC20;
 
 methods {
     function totalSupply() external returns uint256 envfree;
@@ -12,6 +12,9 @@ methods {
     function previewRedeem(uint256) external returns uint256 envfree;
     function _ERC20.totalSupply() external returns uint256 envfree;
     function _ERC20.balanceOf(address) external returns uint256 envfree;
+    function  Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
+    //function ERC20._update(address from, address to, uint256 value) internal => updateSafe(from, to, value);
 }
 
 
@@ -30,6 +33,38 @@ function balaceMirrorsAreCorrect(address x) {
 function safeAssumptionsERC20() {
     requireInvariant sumOfBalancesEqualsTotalSupplyERC20;
     requireInvariant singleUserBalanceSmallerThanTotalSupplyERC20;
+}
+
+function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
+    uint256 res;
+    require(res * denominator) <= x * y;
+    require(res * denominator) > x * y - 1;
+    return res;
+}
+
+//TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
+function updateSafe(address from, address to, uint256 amount){
+    uint256 balanceOfTo = balanceOf(to);
+    uint256 balanceOfFrom = balanceOf(from);
+    uint256 totalSupply = totalSupply();
+
+    
+    //transfer or mint case
+    if(to != 0 && from != to){
+        require(balanceOfTo >= amount);
+    }
+    //transfer or burn case
+    if(from != 0 && from != to){
+        require(balanceOfFrom >= amount);
+    }
+    //mint case
+    if(from == 0 && to != 0){
+        require(totalSupply >= amount);
+    }
+    //burn case
+    if(from != 0 && to == 0){
+        require(totalSupply >= amount);
+    }
 }
 
 rule assetAndShareMonotonicy(){
@@ -86,12 +121,12 @@ ghost mathint sumOfBalancesERC4626 {
     init_state axiom sumOfBalancesERC4626 == 0;
 }
 
-hook Sstore currentContract.balanceOf[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
+hook Sstore ERC4626Mock._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC4626 = sumOfBalancesERC4626 + newValue - oldValue;
     userBalanceERC4626 = newValue;
     balanceOfMirroredERC4626[user] = newValue;
 }
-hook Sload uint256 value currentContract.balanceOf[KEY address user] STORAGE {
+hook Sload uint256 value ERC4626Mock._balances[KEY address user] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to hold.
     require to_mathint(value) <= sumOfBalancesERC4626;
     require value == balanceOfMirroredERC4626[user];
@@ -104,13 +139,13 @@ ghost mathint sumOfBalancesERC20 {
     init_state axiom sumOfBalancesERC20 == 0;
 }
 
-hook Sstore _ERC20.balanceOf[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
+hook Sstore _ERC20._balances[KEY address user] uint256 newValue (uint256 oldValue) STORAGE {
     sumOfBalancesERC20 = sumOfBalancesERC20 + newValue - oldValue;
     userBalanceERC20 = newValue;
     balanceOfMirroredERC20[user] = newValue;
 }
 
-hook Sload uint256 value _ERC20.balanceOf[KEY address user] STORAGE {
+hook Sload uint256 value _ERC20._balances[KEY address user] STORAGE {
     //This line makes the proof work. But is this actually safe to assume? With every load in the programm, we assume the invariant to already hold.
     require to_mathint(value) <= sumOfBalancesERC20;
     require value == balanceOfMirroredERC20[user];
