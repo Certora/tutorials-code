@@ -20,11 +20,32 @@ methods{
     function totalSupply() external returns uint256 envfree;
     function previewWithdraw(uint256 assets) external returns uint256 envfree;
     function previewRedeem(uint256 shares) external returns uint256 envfree;
-    function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+
+    function ERC20._update(address from, address to, uint256 amount) internal => updateSafe(from, to, amount);
 }
 
-function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
-    return require_uint256(x*y / denominator);
+//TODO: Careful here: we have ERC462 and ERC20 balance and totalSupply...
+function updateSafe(address from, address to, uint256 amount){
+    uint256 balanceOfTo = balanceOf(to);
+    uint256 balanceOfFrom = balanceOf(from);
+    uint256 totalSupply = totalSupply();
+    
+    //transfer or mint case
+    if(to != 0 && from != to){
+        require(balanceOfTo >= amount);
+    }
+    //transfer or burn case
+    if(from != 0 && from != to){
+        require(balanceOfFrom >= amount);
+    }
+    //mint case
+    if(from == 0 && to != 0){
+        require(totalSupply >= amount);
+    }
+    //burn case
+    if(from != 0 && to == 0){
+        require(totalSupply >= amount);
+    }
 }
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
