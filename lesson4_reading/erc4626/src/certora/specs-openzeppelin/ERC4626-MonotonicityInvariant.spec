@@ -1,5 +1,5 @@
 
-using ERC20 as _ERC20;
+using ERC20Mock as _ERC20;
 
 methods {
     function totalSupply() external returns uint256 envfree;
