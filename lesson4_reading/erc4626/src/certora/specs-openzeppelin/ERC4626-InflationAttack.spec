@@ -38,30 +38,6 @@ function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint25
 }
 
 
-/// @title the loss while redeeming is limited
-/// - better to redeem at once
-/// - difference should be at most two
-rule userLossIsLimited(address user, address receiver, uint256 s1, uint256 s2) {
-    env e;
-    require(receiver != currentContract);
-    require(user == e.msg.sender);
-    require(totalAssets() > 0);
-    require(totalSupply() > 0);
-    uint256 shares = require_uint256(s1 + s2);
-    require(shares <= balanceOf(e, user));
-    require(shares <= totalSupply());
-
-    storage init = lastStorage;
-
-    mathint redeemed1a = redeem(e, s1, receiver, user);
-    mathint redeemed1b = redeem(e, s2, receiver, user);
-    mathint redeemed2 = redeem(e, shares, receiver, user) at init;
-
-    assert(redeemed2 >= redeemed1a + redeemed1b);
-    assert(redeemed2 <= redeemed1a + redeemed1b + 2);
-}
-
-
 rule simpleVersionOfInflationAttack(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_ownver) {
     env e;
     safeAssumptions();
@@ -74,10 +50,10 @@ rule simpleVersionOfInflationAttack(uint256 assets, address deposit_receiver, ad
 
     require(attacker != currentContract);
 
+    
     uint256 shares = deposit(e, assets, deposit_receiver);
-
-    //In the inflationAttack there are 2 steps that we don't model here! 
     uint256 receivedAssets = redeem(e, shares, redeem_receiver, redeem_ownver);
+
     assert(receivedAssets <= assets);
 }
 
