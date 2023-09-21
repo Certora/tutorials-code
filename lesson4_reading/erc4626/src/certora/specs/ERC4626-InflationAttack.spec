@@ -33,7 +33,7 @@ methods{
 
 
 
-rule simpleVersionOfVulnerableAttack(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_ownver) {
+rule simpleVersionOfInflationAttack(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_ownver) {
     env e;
     safeAssumptions();
     address attacker = e.msg.sender;

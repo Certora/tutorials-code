@@ -29,11 +29,40 @@ methods{
     function previewWithdraw(uint256) external returns uint256 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
+
+    function Math.mulDiv(uint256 x, uint256 y, uint256 denominator) internal returns uint256 => mulDivSummary(x,y,denominator);
+} 
+
+function mulDivSummary(uint256 x, uint256 y, uint256 denominator) returns uint256 {
+    return require_uint256(x*y/denominator);
 }
 
 
+/// @title the loss while redeeming is limited
+/// - better to redeem at once
+/// - difference should be at most two
+rule userLossIsLimited(address user, address receiver, uint256 s1, uint256 s2) {
+    env e;
+    require(receiver != currentContract);
+    require(user == e.msg.sender);
+    require(totalAssets() > 0);
+    require(totalSupply() > 0);
+    uint256 shares = require_uint256(s1 + s2);
+    require(shares <= balanceOf(e, user));
+    require(shares <= totalSupply());
 
-rule simpleVersionOfVulnerableAttack(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_ownver) {
+    storage init = lastStorage;
+
+    mathint redeemed1a = redeem(e, s1, receiver, user);
+    mathint redeemed1b = redeem(e, s2, receiver, user);
+    mathint redeemed2 = redeem(e, shares, receiver, user) at init;
+
+    assert(redeemed2 >= redeemed1a + redeemed1b);
+    assert(redeemed2 <= redeemed1a + redeemed1b + 2);
+}
+
+
+rule simpleVersionOfInflationAttack(uint256 assets, address deposit_receiver, address redeem_receiver, address redeem_ownver) {
     env e;
     safeAssumptions();
     address attacker = e.msg.sender;
@@ -48,16 +77,16 @@ rule simpleVersionOfVulnerableAttack(uint256 assets, address deposit_receiver, a
     uint256 shares = deposit(e, assets, deposit_receiver);
 
     //In the inflationAttack there are 2 steps that we don't model here! 
-
     uint256 receivedAssets = redeem(e, shares, redeem_receiver, redeem_ownver);
     assert(receivedAssets <= assets);
 }
 
 
 
-
 //Source: Medium Article by Shao https://tienshaoku.medium.com/eip-4626-inflation-sandwich-attack-deep-dive-and-how-to-solve-it-9e3e320cc3f1
 rule vulnerableToInflationAttack(address attacker, address victim, address deposit1_receiver, address deposit2_victim_receiver,address redeem_receiver,address redeem_ownver ){
+
+
 
     //Doesn't work properly...Retry later.
     /*requireInvariant sumOfBalancesEqualsTotalSupplyERC4626;
@@ -99,6 +128,11 @@ rule vulnerableToInflationAttack(address attacker, address victim, address depos
     require(balanceOf(deposit2_victim_receiver) == 0);
     require(balanceOf(redeem_receiver) == 0);
     require(balanceOf(redeem_ownver) == 0);
+
+
+    require(balanceOf(attacker) + balanceOf(victim) + balanceOf(deposit1_receiver) +balanceOf(deposit2_victim_receiver) +balanceOf(redeem_receiver) + balanceOf(redeem_ownver) <= to_mathint(totalSupply()));
+    require(__ERC20.balanceOf(attacker) + __ERC20.balanceOf(victim) + __ERC20.balanceOf(deposit1_receiver) +__ERC20.balanceOf(deposit2_victim_receiver) +__ERC20.balanceOf(redeem_receiver) + __ERC20.balanceOf(redeem_ownver) <= to_mathint(__ERC20.totalSupply()));
+
         
     uint256 before_step_1_totalSupply = totalSupply();
     uint256 before_step_1_totalAssets = totalAssets();

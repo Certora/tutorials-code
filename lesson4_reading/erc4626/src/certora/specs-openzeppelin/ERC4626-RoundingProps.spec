@@ -18,7 +18,21 @@ methods{
     function decimals() external returns uint8 envfree;
     function totalAssets() external returns uint256 envfree;
     function totalSupply() external returns uint256 envfree;
+
+    function Math.mulDiv(uint256 x, uint256 y, uint256 denominator, Math.Rounding round) internal returns uint256 => mulDivSummary(x,y,denominator, round);
 } 
+
+function mulDivSummary(uint256 x, uint256 y, uint256 denominator, Math.Rounding round) returns uint256 {
+    uint256 res;
+    //shares <= totalSupply() and assets <= totalAssets 
+    require x <= denominator;  
+
+    //follows from above information: when x/demnominator <= 1 then, res will be at most y. 
+    require res <= y;  
+    require x == 0 => res == 0;    
+    require denominator > 0;
+    return res;
+}
 
 
 function assumeBalanceEqualSumManualERC4626_4(address addr1,address addr2,address addr3, address addr4){
