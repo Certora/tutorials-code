@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
-import {ERC20} from "../../token/ERC20/ERC20.sol";
+import "../token/ERC20/extensions/ERC4626.sol";
 
-contract ERC20Mock is ERC20 {
-    constructor() ERC20("ERC20Mock", "E20M") {}
+contract ERC4626Mock is ERC4626 {
+    constructor(address underlying) ERC20("ERC4626Mock", "E4626M") ERC4626(IERC20(underlying)) {}
 
     function mint(address account, uint256 amount) external {
         _mint(account, amount);
