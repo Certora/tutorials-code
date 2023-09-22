@@ -83,6 +83,10 @@ rule vulnerableToInflationAttack(address attacker, address victim, address depos
     mathint assetsAttackerPreAttack = to_mathint(oneEther) + to_mathint(oneWei);
     uint8 ERC4626decimals = decimals();
     uint8 ERC20decimals = __ERC20.decimals();
+
+
+    require(ERC4626decimals == 10);
+    require(ERC20decimals == 10);
     
     require(attacker != currentContract);
     require(attacker != __ERC20);
@@ -105,9 +109,16 @@ rule vulnerableToInflationAttack(address attacker, address victim, address depos
     require(balanceOf(redeem_receiver) == 0);
     require(balanceOf(redeem_ownver) == 0);
 
+    //These are fair assumptions on the addresses.
+    require(attacker == deposit1_receiver);
+    require(attacker == redeem_ownver);
+    require(attacker == redeem_receiver);
+    //It is important that deposit2_victim_receiver is not equal to attacker, as otherwise the deposit by the victim has to transfer assets to the attacker. 
+    //This would mean the victim already trusts the attacker. Interstingly, we could find a CEX for this case.
+    require(deposit2_victim_receiver != attacker);
 
     require(balanceOf(attacker) + balanceOf(victim) + balanceOf(deposit1_receiver) +balanceOf(deposit2_victim_receiver) +balanceOf(redeem_receiver) + balanceOf(redeem_ownver) <= to_mathint(totalSupply()));
-    require(__ERC20.balanceOf(attacker) + __ERC20.balanceOf(victim) + __ERC20.balanceOf(deposit1_receiver) +__ERC20.balanceOf(deposit2_victim_receiver) +__ERC20.balanceOf(redeem_receiver) + __ERC20.balanceOf(redeem_ownver) <= to_mathint(__ERC20.totalSupply()));
+    require(__ERC20.balanceOf(currentContract) + __ERC20.balanceOf(attacker) + __ERC20.balanceOf(victim) + __ERC20.balanceOf(deposit1_receiver) +__ERC20.balanceOf(deposit2_victim_receiver) +__ERC20.balanceOf(redeem_receiver) + __ERC20.balanceOf(redeem_ownver) <= to_mathint(__ERC20.totalSupply()));
 
         
     uint256 before_step_1_totalSupply = totalSupply();
