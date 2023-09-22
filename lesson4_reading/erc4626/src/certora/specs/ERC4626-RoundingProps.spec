@@ -117,6 +117,9 @@ rule inverseRedeemDepositInFavourForVault(uint256 shares, address deposit_receiv
     assert shares >= depositedShares, "User cannot gain shares using redeem / deposit combination.";
 }
 
+
+//TODO: Double check, is this property correct?
+//Mint and withdraw are inverse from perspective of the implementation, at least one mint shares, the other burns shares
 rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     safeAssumptions();
@@ -130,6 +133,8 @@ rule inverseMintWithdrawInFavourForVault(uint256 shares, address mint_receiver, 
     assert shares >= withdrawnShares, "User cannot gain assets using mint / withdraw combination.";
 }
 
+//TODO: Double check, is this property correct?
+//Mint and withdraw are inverse from perspective of the implementation, at least one mint shares, the other burns shares
 rule inverseWithdrawMintInFavourForVault(uint256 assets, address mint_receiver, address withdraw_receiver, address withdraw_owner){
     env e;
     safeAssumptions();
