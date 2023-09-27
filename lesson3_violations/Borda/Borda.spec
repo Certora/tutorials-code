@@ -217,6 +217,10 @@ ghost mapping(address => uint256) points_mirror {
  init_state axiom forall address c. points_mirror[c] == 0;
 } 
 
+ghost mapping(address => bool) voted_mirror {
+	init_state axiom forall address c. !voted_mirror[c];
+}
+
 ghost mathint countVoters {
     init_state axiom countVoters == 0;
 }
@@ -235,7 +239,8 @@ hook Sload uint256 curr_point _points[KEY address a]  STORAGE {
 }
 
 hook Sstore _voted[KEY address a] bool val (bool old_val) STORAGE {
-  countVoters = countVoters +1;
+  countVoters = countVoters + 1;
+  voted_mirror[a] = val;
 }
 
 
@@ -253,4 +258,10 @@ rule resolvabilityCriterion(address f, address s, address t, address tie) {
   Each voter contribute a total of 6 points, so the sum of all points is six time the number of voters 
 */
 invariant sumOfPoints() 
-    sumPoints == countVoters * 6; 
+    sumPoints == countVoters * 6;
+
+
+// ADDED RULES:
+
+invariant votedFunctionIsVotedMapping()
+	forall address a. voted_mirror[a] == voted(a);
