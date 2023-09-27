@@ -14,5 +14,5 @@ rule drawFavorsWinner(env e, address f, address s, address t) {
     
     address w2 = winner(e);
 
-    assert w1 != w2 <=> points(e, f) > w1Points || points(e, s) > w1Points || points(e, t) > w1Points;
+    assert w1 != w2 => points(e, f) > w1Points || points(e, s) > w1Points || points(e, t) > w1Points;
 }
