@@ -283,3 +283,15 @@ rule onlyVotingCanChangeTheWinner(env e, method m){
     address winnerAfter = winner();
     assert m.selector != sig:vote(address,address,address).selector => winnerAfter == winnerBefore, "The winner can be changed only after voting";
 }
+
+rule viewNeverRevert() {
+    address _points;
+    address _voted;
+
+    winner@withrevert();
+    assert !lastReverted;
+    points@withrevert(_points);
+    assert !lastReverted;
+    voted@withrevert(_voted);
+    assert !lastReverted;
+}
