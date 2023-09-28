@@ -275,3 +275,11 @@ rule preferLastVotedHigh(address f, address s, address t) {
 	assert (points(w) == points(s) => points(w) == prev_points || w == f || w == s);
 	assert (points(w) == points(t) => points(w) == prev_points || w == f || w == s || w == t);
 }
+
+rule onlyVotingCanChangeTheWinner(env e, method m){
+    address winnerBefore = winner();
+    calldataarg args; 
+    m(e, args);
+    address winnerAfter = winner();
+    assert m.selector != sig:vote(address,address,address).selector => winnerAfter == winnerBefore, "The winner can be changed only after voting";
+}
