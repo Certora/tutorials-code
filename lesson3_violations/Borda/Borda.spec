@@ -228,10 +228,15 @@ ghost mathint sumPoints {
     init_state axiom sumPoints == 0;
 }
 
+ghost bool accessed {
+	init_state axiom !accessed;
+}
+
 /* update ghost on changes to _points */
 hook Sstore _points[KEY address a] uint256 new_points (uint256 old_points) STORAGE {
     points_mirror[a] = new_points;
     sumPoints = sumPoints + new_points - old_points;
+    accessed = true;
 }
 
 hook Sload uint256 curr_point _points[KEY address a]  STORAGE {
@@ -241,6 +246,7 @@ hook Sload uint256 curr_point _points[KEY address a]  STORAGE {
 hook Sstore _voted[KEY address a] bool val (bool old_val) STORAGE {
     countVoters = countVoters + (val ? 1 : 0) - (old_val ? 1 : 0);
     voted_mirror[a] = val;
+    accessed = true;
 }
 
 
@@ -295,3 +301,10 @@ rule viewNeverRevert() {
     voted@withrevert(_voted);
     assert !lastReverted;
 }
+
+// require that !accessed in the initial state after the constructor concludes
+invariant noConstructorSSTOREs() 
+    !accessed
+	{ preserved {
+		require false; // this is purposely vacuous
+	} }
