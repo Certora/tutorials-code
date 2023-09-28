@@ -214,11 +214,11 @@ Resolvability criterion
  
 
 ghost mapping(address => uint256) points_mirror {
- init_state axiom forall address c. points_mirror[c] == 0;
-} 
+    init_state axiom forall address c. points_mirror[c] == 0;
+}
 
 ghost mapping(address => bool) voted_mirror {
-	init_state axiom forall address c. !voted_mirror[c];
+    init_state axiom forall address c. !voted_mirror[c];
 }
 
 ghost mathint countVoters {
@@ -230,17 +230,17 @@ ghost mathint sumPoints {
 
 /* update ghost on changes to _points */
 hook Sstore _points[KEY address a] uint256 new_points (uint256 old_points) STORAGE {
-  points_mirror[a] = new_points;
-  sumPoints = sumPoints + new_points - old_points;
+    points_mirror[a] = new_points;
+    sumPoints = sumPoints + new_points - old_points;
 }
 
 hook Sload uint256 curr_point _points[KEY address a]  STORAGE {
-  require points_mirror[a] == curr_point;
+    require points_mirror[a] == curr_point;
 }
 
 hook Sstore _voted[KEY address a] bool val (bool old_val) STORAGE {
-  countVoters = countVoters + 1;
-  voted_mirror[a] = val;
+    countVoters = countVoters + (val ? 1 : 0) - (old_val ? 1 : 0);
+    voted_mirror[a] = val;
 }
 
 
@@ -264,16 +264,16 @@ invariant sumOfPoints()
 // ADDED RULES:
 
 invariant votedFunctionIsVotedMapping()
-	forall address a. voted_mirror[a] == voted(a);
+    forall address a. voted_mirror[a] == voted(a);
 
 rule preferLastVotedHigh(address f, address s, address t) {
-	env e;
+    env e;
     uint prev_points = points(winner());
-	vote(e, f, s, t);
-	address w = winner();
-	assert (points(w) == points(f) => points(w) == prev_points || w == f);
-	assert (points(w) == points(s) => points(w) == prev_points || w == f || w == s);
-	assert (points(w) == points(t) => points(w) == prev_points || w == f || w == s || w == t);
+    vote(e, f, s, t);
+    address w = winner();
+    assert (points(w) == points(f) => points(w) == prev_points || w == f);
+    assert (points(w) == points(s) => points(w) == prev_points || w == f || w == s);
+    assert (points(w) == points(t) => points(w) == prev_points || w == f || w == s || w == t);
 }
 
 rule onlyVotingCanChangeTheWinner(env e, method m){
