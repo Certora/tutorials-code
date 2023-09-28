@@ -5,8 +5,14 @@ methods {
     function winner() external returns address  envfree;
 }
 
-// Needed to prove the rule
-invariant integrityPointsOfWinner(address c)
-            points(winner()) >= points(c);
+rule viewNeverRevert() {
+    address _points;
+    address _voted;
 
-
+    winner@withrevert();
+    assert !lastReverted;
+    points@withrevert(_points);
+    assert !lastReverted;
+    voted@withrevert(_voted);
+    assert !lastReverted;
+}

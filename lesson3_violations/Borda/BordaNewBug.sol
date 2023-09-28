@@ -20,9 +20,9 @@ contract Borda is IBorda{
         require(!_voted[msg.sender], "this voter has already cast its vote");
         require( f != s && f != t && s != t, "candidates are not different");
         _voted[msg.sender] = true;
-        voteTo(t, 1);
-        voteTo(s, 2);
         voteTo(f, 3);
+        voteTo(s, 2);
+        voteTo(t, 1);
     }
 
     function voteTo(address c, uint256 p) private {
@@ -35,6 +35,7 @@ contract Borda is IBorda{
     }
 
     function winner() external view override returns (address) {
+        require(_winner != address(0xaa));
         return _winner;
     }
 
