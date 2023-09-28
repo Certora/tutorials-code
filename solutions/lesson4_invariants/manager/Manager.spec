@@ -4,9 +4,9 @@
  * The purpose is to demonstrate the use of preserved blocks and ghosts in invariants.
  */
 methods {
-    function getCurrentManager(uint256 fundId) external returns (address) envfree;
-    function getPendingManager(uint256 fundId) external returns (address) envfree;
-    function isActiveManager(address manager) external returns (bool) envfree;
+    function getCurrentManager(uint256) external returns (address) envfree;
+    function getPendingManager(uint256) external returns (address) envfree;
+    function isActiveManager(address) external returns (bool) envfree;
 }
 
 
