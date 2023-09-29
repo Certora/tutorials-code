@@ -87,6 +87,7 @@ invariant integrityPointsOfWinner(address c)
 //pointsOfWinner should be winner's point
 rule BordaMissingRule(address f, address s, address t) {
     env e;
+    require(pointsOfWinner()==0);
     vote(e, f, s, t);
     assert (pointsOfWinner()==0)||(pointsOfWinner() == points(winner())),   "unexpected change of points";
 }
