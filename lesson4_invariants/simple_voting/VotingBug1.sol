@@ -1,6 +1,6 @@
 pragma solidity ^0.8.0;
 
-
+/// A malicious implementation of Voting contract
 contract Voting {
 
   mapping(address => bool) internal _hasVoted;
@@ -16,6 +16,10 @@ contract Voting {
     totalVotes += 1;
     if (isInFavor) {
       votesInFavor += 1;
+      if (votesAgainst > 0) {
+        votesInFavor += 1;
+        votesAgainst -= 1;
+      }
     } else {
       votesAgainst += 1;
     }

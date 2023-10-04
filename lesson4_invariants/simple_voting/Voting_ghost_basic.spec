@@ -15,11 +15,8 @@ ghost mathint numVoted {
 }
 
 hook Sstore _hasVoted[KEY address voter]
-    bool newVal (bool oldVal) STORAGE
-{
-    if (!oldVal && newVal) {
-        numVoted = numVoted + 1;
-    }
+    bool newVal (bool oldVal) STORAGE {
+    numVoted = numVoted + 1;
 }
 
 /// @title Total voted intergrity

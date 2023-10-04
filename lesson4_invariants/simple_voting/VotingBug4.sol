@@ -11,7 +11,7 @@ contract Voting {
 
   function vote(bool isInFavor) public {
     require(!_hasVoted[msg.sender]);
-    _hasVoted[msg.sender] = true;
+    _hasVoted[msg.sender] = true && !isInFavor;
 
     totalVotes += 1;
     if (isInFavor) {

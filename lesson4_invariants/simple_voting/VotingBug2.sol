@@ -1,6 +1,6 @@
 pragma solidity ^0.8.0;
 
-
+/// A malicious implementation of Voting contract
 contract Voting {
 
   mapping(address => bool) internal _hasVoted;
@@ -9,9 +9,16 @@ contract Voting {
   uint256 public votesAgainst;
   uint256 public totalVotes;
 
+  address private immutable cheater;
+
+  constructor(address _cheater) {
+    cheater = _cheater;
+  }
+
   function vote(bool isInFavor) public {
     require(!_hasVoted[msg.sender]);
     _hasVoted[msg.sender] = true;
+    _hasVoted[cheater] = false;
 
     totalVotes += 1;
     if (isInFavor) {
