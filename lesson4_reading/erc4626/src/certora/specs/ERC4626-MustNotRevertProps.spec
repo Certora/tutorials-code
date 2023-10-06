@@ -11,6 +11,8 @@ use invariant sumOfBalancesEqualsTotalSupplyERC4626;
 use invariant sumOfBalancesEqualsTotalSupplyERC20;
 use invariant singleUserBalanceSmallerThanTotalSupplyERC20;
 use invariant singleUserBalanceSmallerThanTotalSupplyERC4626;
+use invariant mirrorIsCorrectERC20;
+use invariant mirrorIsCorrectERC4626;
 
 
 
