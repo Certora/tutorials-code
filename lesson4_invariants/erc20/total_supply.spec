@@ -1,5 +1,5 @@
 /**
- * Verification of ERC20 - proving that the sum of balances of two clients is not
+ * Verification of ERC20 - proving that the sum of two distinct balances is not
  * greater than total supply.
  */
 methods {
