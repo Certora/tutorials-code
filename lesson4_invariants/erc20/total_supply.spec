@@ -23,11 +23,12 @@ ghost mapping(address => uint256) balanceOfMirror {
  *  @notice We require that it would be at least the sum of three balances, since that
  *  is what is needed in the `preserved` blocks.
  *  @notice We use the `balanceOfMirror` mirror here, since we are not allowed to call
+ghost mathint sumBalances {
+    init_state axiom sumBalances == 0;
  *  contract functions from a ghost.
  */
 ghost mathint sumBalances {
     init_state axiom sumBalances == 0;
-    axiom forall address a. sumBalances >= to_mathint(balanceOfMirror[a]);
     axiom forall address a. forall address b. (
         (a != b => sumBalances >= balanceOfMirror[a] + balanceOfMirror[b])
     );
@@ -73,10 +74,6 @@ invariant totalIsSumBalances()
 /// @title The sum of two balances is not greater than `sumBalances`
 invariant sumOfTwo(address a, address b)
     (a != b) => (balanceOf(a) + balanceOf(b) <= sumBalances) {
-        preserved {
-            requireInvariant mirrorIsTrue(a);
-            requireInvariant mirrorIsTrue(b);
-        }
         preserved transfer(address recipient, uint256 amt) with (env e1) {
             requireInvariant mirrorIsTrue(a);
             requireInvariant mirrorIsTrue(b);
@@ -88,5 +85,25 @@ invariant sumOfTwo(address a, address b)
             requireInvariant mirrorIsTrue(a);
             requireInvariant mirrorIsTrue(b);
             requireInvariant mirrorIsTrue(recipient);
+        }
+    }
+
+
+/// @title The sum of two balances is not greater than `totalSupply`
+invariant sumOfTwoTotalSupply(address a, address b)
+    (a != b) => (balanceOf(a) + balanceOf(b) <= to_mathint(totalSupply())) {
+        preserved transfer(address recipient, uint256 amt) with (env e1) {
+            requireInvariant mirrorIsTrue(a);
+            requireInvariant mirrorIsTrue(b);
+            requireInvariant mirrorIsTrue(recipient);
+            requireInvariant totalIsSumBalances();
+        }
+        preserved transferFrom(
+            address sender, address recipient, uint256 amount
+        ) with (env e2) {
+            requireInvariant mirrorIsTrue(a);
+            requireInvariant mirrorIsTrue(b);
+            requireInvariant mirrorIsTrue(recipient);
+            requireInvariant totalIsSumBalances();
         }
     }
