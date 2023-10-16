@@ -92,6 +92,25 @@ rule votesChangeByOne(method f) {
 }
 
 
+/// @title Voter determines if vote in favor or against
+rule voterDecides(bool isInFavor) {
+    uint256 preFavor = votesInFavor();
+    uint256 preAgainst = votesAgainst();
+
+    env e;
+    vote(e, isInFavor);
+
+    uint256 postFavor = votesInFavor();
+    uint256 postAgainst = votesAgainst();
+
+    assert (
+        (isInFavor => (postFavor > preFavor)) &&
+        (!isInFavor => (postAgainst > preAgainst))
+    ), "Voter determines if vote is in favor or against";
+}
+
+
+
 /// @title Anyone can vote once
 rule anyoneCanVote(address voter, bool isInFavor) {
     bool preHasVoted = hasVoted(voter);

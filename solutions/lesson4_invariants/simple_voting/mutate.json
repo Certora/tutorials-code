@@ -1,0 +1,6 @@
+{
+    "gambit": {
+        "filename": "../../../lesson4_invariants/simple_voting/Voting.sol",
+        "solc": "solc8.0"
+    }
+}
