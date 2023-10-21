@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.8.0;
 
-import {ERC20} from "../../src/tokens/ERC20.sol";
+import {ERC20} from "./ERC20.sol";
 
-contract ERC20_asset is ERC20 {
+contract ERC20B is ERC20 {
 
     constructor(
         string memory _name,
