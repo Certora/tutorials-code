@@ -1,5 +1,8 @@
 /**
  * # Simple voting contract complete spec
+ *
+ * To use gambit, run from the tutorials-code root folder the following command:
+ * `certoraMutate --prover_conf solutions/lesson4_invariants/simple_voting/Voting_solution.conf --mutation_conf solutions/lesson4_invariants/simple_voting/mutate.json`
  */
 methods
 {
