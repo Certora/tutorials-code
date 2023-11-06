@@ -20,4 +20,8 @@ contract Voting {
       votesAgainst += 1;
     }
   }
+
+  function hasVoted(address voter) public view returns (bool) {
+    return _hasVoted[voter];
+  }
 }
