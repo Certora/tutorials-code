@@ -7,7 +7,7 @@ pragma solidity ^0.8.0;
  * 
  * Data structures
  * ---------------
- * The pyramid is built as a binary tree, with a unique root.
+ * The pyramid must be a binary tree, with a unique root.
  *
  * Each member has:
  * - balance
@@ -16,11 +16,13 @@ pragma solidity ^0.8.0;
  *
  * Methods
  * -------
- * - Withdraw: whenever a participant withdraws amount
- *   * the same amount goes to the parent or 1 token goes to the parent
- *   * Once a certain amount X was passed to the parent, no more needs to be paid?
+ * - Withdraw: whenever a participant withdraws amount:
+ *   * A fraction of the withdrawn amount goes to the parent
+ *     (or a constant amount?)
+ *   * Maybe once a certain amount X was passed to the parent, no more needs to be paid?
+ *   TODO: guarantee that `withdraw` will not be mutated!
  * - Join:
- *   * there is a joining price J
+ *   * there is a fixed joining price
  *   * this is paid not by the joining participant, but by the parent which admits them
  *   * only two children per participant are allowed
  *
@@ -52,6 +54,12 @@ contract Pyramid {
     require(_parentFrac > 0, "Must be non-zero");
     parentFrac = _parentFrac;
     joiningFee = _joiningFee;
+    
+    // Set the root
+    require(msg.sender != address(0), "Address zero cannot be a member");
+    _root = msg.sender;
+    Member storage memberData = members[msg.sender];
+    memberData.exists = true;
   }
 
   modifier memebersOnly() {
@@ -109,22 +117,21 @@ contract Pyramid {
   /**
    * @notice method for withdrawing from the pyramid scheme for the sender
    * @dev for every amount x withdrawn, an amount x/y of the sender's balance will be
-   * given to the sender's parent, where y is `parentFrac`, the root is excluded from
-   * this
+   * given to the sender's parent, where y is `parentFrac` (the root is excluded from
+   * this)
    */
   function withdraw(uint256 amount) memebersOnly() public {
-    // Root need not send money to parent
-    uint256 parentPart = msg.sender == _root ? 0 : amount / parentFrac;
-    uint256 totalRemove = amount + parentPart;
     Member storage memberData = members[msg.sender];
+
+    // If there is no parent than the parent part is zero
+    uint256 parentPart = contains(memberData.parent) ? amount / parentFrac : 0;
+    uint256 totalRemove = amount + parentPart;
     require(memberData.balance >= totalRemove, "Insufficient funds");
 
     memberData.balance -= totalRemove;
     
     // Send parent part
-    if (msg.sender != _root) {
-      members[memberData.parent].balance += parentPart;
-    }
+    members[memberData.parent].balance += parentPart;
     
     // Send member's payment
     (bool success, ) = msg.sender.call{value: amount}("");
@@ -140,7 +147,7 @@ contract Pyramid {
    * scheme
    */
   function join(address child, bool isRight) memebersOnly() public {
-    require(!hasChild(msg.sender, isRight), "Child elready exists");
+    require(!hasChild(msg.sender, isRight), "Child already exists");
     require(!contains(child), "Child already a member");
     require(child != address(0), "Address zero cannot be a member");
 

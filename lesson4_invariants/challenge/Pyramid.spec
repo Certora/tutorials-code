@@ -1,67 +1,84 @@
-methods {
-    function contains(bytes32) external returns (bool) envfree;
-    function root() external returns (bytes32) envfree;
-    function insert(bytes32, uint256) external envfree;
-}
-
-/* Ideas for rules
- * ---------------
- * Rightmost is maximal
- * Leftmost is minimal
+/* Specification for Pyramid Scheme contract
+ *
+ * TODO:
+ * - Total balance unchanged except for ...
  */
-
-definition Zero() returns bytes32 = to_bytes32(0);
-
-
-ghost mapping(bytes32 => bytes32) leftChild;
-ghost mapping(bytes32 => bytes32) rightChild;
-
-ghost mapping(bytes32 => mapping(bytes32 => bool)) isChildOf {
-    init_state axiom forall bytes32 a. forall bytes32 b. !isChildOf[a][b];
+methods {
+    function contains(address) external returns (bool) envfree;
+    function root() external returns (address) envfree;
 }
 
-ghost mapping(bytes32 => mapping(bytes32 => bool)) reachable {
-    init_state axiom forall bytes32 from. forall bytes32 to. !reachable[from][to];
-    //axiom forall bytes32 key. !reachable[key][Zero()] && !reachable[Zero()][key];
+ghost address _rootGhost;
+
+
+/** @title Ghost `isChildOf[parent][child]`
+ */
+ghost mapping(address => mapping(address => bool)) isChildOf {
+    init_state axiom forall address a. forall address b. !isChildOf[a][b];
+}
+
+
+ghost mapping(address => bool) isMember {
+    init_state axiom forall address a. !isMember[a];
+}
+
+
+ghost mapping(address => mapping(address => bool)) reachable {
+    init_state axiom forall address from. forall address to. !reachable[from][to];
+
+    // Non-members are never reachable
+    axiom forall address a. forall address b. (
+        !isMember[a] => (!reachable[a][b] && !reachable[b][a])
+    );
 
     // Reflexivity
-    //axiom forall bytes32 key. (key != 0 && elementExists[key]) => reachable[key][key];
+    axiom forall address a. (a != 0 && isMember[a]) => reachable[a][a];
 
     // Transitivity
-    axiom forall bytes32 x. forall bytes32 y. forall bytes32 z. (
+    axiom forall address x. forall address y. forall address z. (
         (reachable[x][y] && reachable[y][z]) => reachable[x][z]
     );
 
+    // Anti-commutativity
+    axiom forall address a. forall address b. !reachable[a][b] || !reachable[b][a];
+
     // In a tree there is a unique path (also reflexivity)
-    axiom forall bytes32 x. forall bytes32 y. forall bytes32 z. (
+    axiom forall address x. forall address y. forall address z. (
         (reachable[x][z] && reachable[y][z]) => (reachable[x][y] || reachable[y][x])
     );
 
     // Immediate children
-    axiom forall bytes32 parent. forall bytes32 child. (
+    axiom forall address parent. forall address child. (
         isChildOf[parent][child] => reachable[parent][child]
     );
+
+    // Root reaches all
+    axiom forall address a. isMember[a] => reachable[_rootGhost][a];
 }
 
-hook Sstore currentContract.tree.elements[KEY bytes32 key].leftChild 
-    bytes32 newChild (bytes32 oldChild) STORAGE
+hook Sstore currentContract.members[KEY address member].leftChild
+    address newChild (address oldChild) STORAGE
 {
-        leftChild[key] = newChild;
-        isChildOf[key][newChild] = true;
-        if (rightChild[key] != oldChild) {
-            isChildOf[key][oldChild] = false;
-        }
+    leftChild[member] = newChild;
+    isChildOf[menber][newChild] = true;
 }
 
-hook Sstore currentContract.tree.elements[KEY bytes32 key].rightChild 
-    bytes32 newChild (bytes32 oldChild) STORAGE
+hook Sstore currentContract.members[KEY address member].rightChild
+    address newChild (address oldChild) STORAGE
 {
-        rightChild[key] = newChild;
-        isChildOf[key][newChild] = true;
-        if (leftChild[key] != oldChild) {
-            isChildOf[key][oldChild] = false;
-        }
+    rightChild[member] = newChild;
+    isChildOf[member][newChild] = true;
 }
 
-invariant rootReachesAll(bytes32 key)
-    (contains(key) && key != root()) => reachable[root()][key];
+hook Sstore currentContract.members[KEY address member].exists
+    bool newVal (bool oldVal) STORAGE
+{
+    isMember[member] = newVal;
+}
+
+invariant membershipGhost(address a)
+    isMember[a] == contains(a);
+
+invariant rootReachesAll(address a, address b)
+    (
+        isMember[a] == contains(a) && isMember[b] == contains[b]
