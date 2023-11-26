@@ -32,18 +32,6 @@ contract StrIssue {
     return structArray.length;
   }
 
-  /// @notice This function will "clean" the storage for the next push into `structArray`.
-  function clear() public {
-    S memory empty;
-    structArray.push(empty);
-    structArray.pop();
-  }
-
-  /// @notice We'll use this function to ensure the string encoding is correct.
-  function getString(uint256 index) public view returns (string memory) {
-    return structArray[index].y;
-  }
-
   /// @notice This function exists solely to ruin the encoding of `structArray[index].y`.
   function dirty(uint256 z, uint256 index) public {
     bool isOdd = z % 2 == 1;
@@ -56,5 +44,24 @@ contract StrIssue {
         sstore(dirtyString.slot, z)
       }
     }
+  }
+}
+
+
+/**
+ * @title StrIssueHarness - additional functions used for "cleaning" the storage
+ */
+contract StrIssueHarness is StrIssue {
+
+  /// @notice This function will "clean" the storage for the next push into `structArray`.
+  function clear() public {
+    S memory empty;
+    structArray.push(empty);
+    structArray.pop();
+  }
+
+  /// @notice We'll use this function to ensure the string encoding is correct.
+  function getString(uint256 index) public view returns (string memory) {
+    return structArray[index].y;
   }
 }

@@ -36,19 +36,3 @@ hook Sstore structArray[INDEX uint256 index].(offset 32) bytes32 str STORAGE {
  */
 invariant alwaysLegalStorage()
     isLegalStr;
-
-
-/** @title All reads and writes to string `y` are legal
- *  @notice This version is needed for `solc` versions higher than 0.8.10.
- */
-/*
-invariant alwaysLegalStorageHighSolc()
-    isLegalStr;
-    {
-        preserved push(uint256 x, string yVal) with (env e) {
-            // In `solc` versions higher than 0.8.10 over-approximation allows for
-            // pushing invalid strings. This prevents it.
-            push(e, x, yVal);
-            getString(e, require_uint256(arrayLength(e) - 1));
-        }
-    }

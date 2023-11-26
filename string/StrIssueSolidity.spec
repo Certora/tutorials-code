@@ -2,7 +2,7 @@
  * Solution to string revert issue by harnessing Solidity functions
  * ================================================================
  *
- * Here we use two "harnessed" functions `clear()` and `getString(index)`. Calling
+ * Here we use two harnessed functions `clear()` and `getString(index)`. Calling
  * `clear()` from CVL (without `@withrevert`) will ensure that the next call to `push`
  * will have well encoded storage. Similarly, calling `getString(index)` before
  * `getData(index)` will ensure the string we shall read is well-encoded.
