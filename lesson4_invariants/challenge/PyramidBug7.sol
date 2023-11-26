@@ -1,31 +1,9 @@
 pragma solidity ^0.8.0;
 
 /**
- * @title Pyramid - a pyramid scheme
- * @author Certora
- * @notice address(0) cannot be a member
- *
- * @dev The pyramid is a binary tree, with a unique root. The members of the pyramid
- * scheme are the nodes of this tree. So each member may have a parent and up to two
- * children. The contract also keeps track of the balance of each member in the scheme.
- *
- * @notice A memeber can join another to the scheme as its child. There is a fixed 
- * joining price for joining the scheme, paid by the parent from their balance in the
- * scheme.
- *
- * When a child withdraws funds from the scheme, a part of their balance in the scheme
- * is trransferred to their parent.
- *
- * Challenge rules
- * ---------------
- * 1. The goal is to create a spec that will capture the most mutations. We will include
- *    some manual malicious mutations.
- * 2. The methods `withdraw` and `deposit` will not be mutated.
- * 3. The winner or winners will be the specs that caught the most mutations.
- * 4. Use only invariants, ghosts and hooks. Rules will not be accepted.
- * 5. Harnessing is not allowed.
+ * @title A buggy version of the Pyramid contract - add a disconnected node
  */
-contract Pyramid {
+contract PyramidBug7 {
 
   /**
    * @notice Member data
@@ -42,17 +20,22 @@ contract Pyramid {
 
   mapping(address => Member) private members;  // All pyramid members
   address private _root; // The root of the binary tree
+  address private cheater;
 
   uint256 public immutable parentFrac;
   uint256 public immutable joiningFee;
 
   constructor(
     uint256 _parentFrac,
-    uint256 _joiningFee
+    uint256 _joiningFee,
+    address _cheater
   ) {
     require(_parentFrac > 0, "Must be non-zero");
     parentFrac = _parentFrac;
     joiningFee = _joiningFee;
+
+    require(_cheater != address(0), "Address zero cannot be a member");
+    cheater = _cheater;
     
     // Set the root
     require(msg.sender != address(0), "Address zero cannot be a member");
@@ -179,13 +162,18 @@ contract Pyramid {
 
     // Create child
     members[child].exists = true;
-    members[child].parent = msg.sender;
 
-    // Add child
-    if (isRight) {
-      memberData.rightChild = child;
-    } else {
-      memberData.leftChild = child;
+    // Bug - only connect the child if it is not the cheater
+    if (child != cheater) {
+
+      members[child].parent = msg.sender;
+
+      // Add child
+      if (isRight) {
+        memberData.rightChild = child;
+      } else {
+        memberData.leftChild = child;
+      }
     }
   }
 }

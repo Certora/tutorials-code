@@ -1,31 +1,9 @@
 pragma solidity ^0.8.0;
 
 /**
- * @title Pyramid - a pyramid scheme
- * @author Certora
- * @notice address(0) cannot be a member
- *
- * @dev The pyramid is a binary tree, with a unique root. The members of the pyramid
- * scheme are the nodes of this tree. So each member may have a parent and up to two
- * children. The contract also keeps track of the balance of each member in the scheme.
- *
- * @notice A memeber can join another to the scheme as its child. There is a fixed 
- * joining price for joining the scheme, paid by the parent from their balance in the
- * scheme.
- *
- * When a child withdraws funds from the scheme, a part of their balance in the scheme
- * is trransferred to their parent.
- *
- * Challenge rules
- * ---------------
- * 1. The goal is to create a spec that will capture the most mutations. We will include
- *    some manual malicious mutations.
- * 2. The methods `withdraw` and `deposit` will not be mutated.
- * 3. The winner or winners will be the specs that caught the most mutations.
- * 4. Use only invariants, ghosts and hooks. Rules will not be accepted.
- * 5. Harnessing is not allowed.
+ * @title A buggy version of the Pyramid contract - child is parent of root
  */
-contract Pyramid {
+contract PyramidBug3 {
 
   /**
    * @notice Member data
@@ -186,6 +164,11 @@ contract Pyramid {
       memberData.rightChild = child;
     } else {
       memberData.leftChild = child;
+    }
+
+    // Bug - make new child parent of root
+    if (msg.sender != root()) {
+      members[child].leftChild = root();
     }
   }
 }

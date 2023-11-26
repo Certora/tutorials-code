@@ -1,31 +1,9 @@
 pragma solidity ^0.8.0;
 
 /**
- * @title Pyramid - a pyramid scheme
- * @author Certora
- * @notice address(0) cannot be a member
- *
- * @dev The pyramid is a binary tree, with a unique root. The members of the pyramid
- * scheme are the nodes of this tree. So each member may have a parent and up to two
- * children. The contract also keeps track of the balance of each member in the scheme.
- *
- * @notice A memeber can join another to the scheme as its child. There is a fixed 
- * joining price for joining the scheme, paid by the parent from their balance in the
- * scheme.
- *
- * When a child withdraws funds from the scheme, a part of their balance in the scheme
- * is trransferred to their parent.
- *
- * Challenge rules
- * ---------------
- * 1. The goal is to create a spec that will capture the most mutations. We will include
- *    some manual malicious mutations.
- * 2. The methods `withdraw` and `deposit` will not be mutated.
- * 3. The winner or winners will be the specs that caught the most mutations.
- * 4. Use only invariants, ghosts and hooks. Rules will not be accepted.
- * 5. Harnessing is not allowed.
+ * @title A buggy version of the Pyramid contract - use grandfather as parent
  */
-contract Pyramid {
+contract PyramidBug6 {
 
   /**
    * @notice Member data
@@ -168,18 +146,21 @@ contract Pyramid {
    * @dev A joining fee amount will be deducted from the sender's balance in the scheme
    */
   function join(address child, bool isRight) memebersOnly() public {
-    require(!hasChild(msg.sender, isRight), "Child already exists");
+    // Bug - use grandfather as parent if sender is not root
+    address parent = msg.sender == root() ? msg.sender : members[msg.sender].parent;
+
+    require(!hasChild(parent, isRight), "Child already exists");
     require(!contains(child), "Child already a member");
     require(child != address(0), "Address zero cannot be a member");
 
     // Deduct joining fee
-    Member storage memberData = members[msg.sender];
+    Member storage memberData = members[parent];
     require(memberData.balance >= joiningFee, "Insufficient funds");
     memberData.balance -= joiningFee;
 
     // Create child
     members[child].exists = true;
-    members[child].parent = msg.sender;
+    members[child].parent = parent;
 
     // Add child
     if (isRight) {

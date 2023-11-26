@@ -1,0 +1,444 @@
+[
+    {
+        "content": "methods {\n    function root() external returns (address) envfree;\n    function parentFrac() external returns (uint256) envfree;\n    function joiningFee() external returns (uint256) envfree;\n    function contains(address) external returns (bool) envfree;\n}",
+        "type": "methods"
+    },
+    {
+        "content": "/// @title Is a member\nghost mapping(address => bool) isMember {\n    init_state axiom forall address a. !isMember[a];\n}",
+        "type": "ghost",
+        "id": "isMember",
+        "title": "Is a member"
+    },
+    {
+        "content": "/// @title Left child\nghost mapping(address => address) leftChild {\n    init_state axiom forall address member. leftChild[member] == 0;\n}",
+        "type": "ghost",
+        "id": "leftChild",
+        "title": "Left child"
+    },
+    {
+        "content": "/// @title Ghost `isChildOf[parent][child]`\nghost mapping(address => mapping(address => bool)) isChildOf {\n    init_state axiom forall address a. forall address b. !isChildOf[a][b];\n}",
+        "type": "ghost",
+        "id": "isChildOf",
+        "title": "Ghost `isChildOf[parent][child]`"
+    },
+    {
+        "content": "/// @title Ghost `isParentOf[parent][child]`\nghost mapping(address => mapping(address => bool)) isParentOf {\n    init_state axiom forall address a. forall address b. !isParentOf[a][b];\n}",
+        "type": "ghost",
+        "id": "isParentOf",
+        "title": "Ghost `isParentOf[parent][child]`"
+    },
+    {
+        "content": "/// @title Right child\nghost mapping(address => address) rightChild {\n    init_state axiom forall address member. rightChild[member] == 0;\n}",
+        "type": "ghost",
+        "id": "rightChild",
+        "title": "Right child"
+    },
+    {
+        "content": "/// @title The root\nghost address rootMirror;",
+        "type": "ghost",
+        "id": "rootMirror",
+        "title": "The root"
+    },
+    {
+        "content": "/// @title Reachable from root\nghost mapping(address => bool) rootReachable {\n    init_state axiom forall address to. (to == rootMirror) || !rootReachable[to];\n\n    // Root\n    axiom rootReachable[rootMirror];\n\n    // Immediate children\n    axiom forall address parent. forall address child. (\n        (isChildOf[parent][child] && rootReachable[parent]) => rootReachable[child]\n    );\n}",
+        "type": "ghost",
+        "id": "rootReachable",
+        "title": "Reachable from root"
+    },
+    {
+        "content": "/// @title Root is ancestor\nghost mapping(address => bool) isRootAncestor {\n    init_state axiom forall address a. (a == rootMirror) || !isRootAncestor[a];\n\n    // Root\n    axiom isRootAncestor[rootMirror];\n\n    // Immediate children\n    axiom forall address parent. forall address child. (\n        (isParentOf[parent][child] && isRootAncestor[parent]) => isRootAncestor[child]\n    );\n}",
+        "type": "ghost",
+        "id": "isRootAncestor",
+        "title": "Root is ancestor"
+    },
+    {
+        "content": "/// @title Illegal child update\nghost bool illegalChildUpdate {\n    init_state axiom !illegalChildUpdate;\n}",
+        "type": "ghost",
+        "id": "illegalChildUpdate",
+        "title": "Illegal child update"
+    },
+    {
+        "content": "/// @title Illegal parent update\nghost bool illegalParentUpdate {\n    init_state axiom !illegalParentUpdate;\n}",
+        "type": "ghost",
+        "id": "illegalParentUpdate",
+        "title": "Illegal parent update"
+    },
+    {
+        "content": "/// @title Illegal root change\nghost bool illegalRootChange {\n    init_state axiom !illegalRootChange;\n}",
+        "type": "ghost",
+        "id": "illegalRootChange",
+        "title": "Illegal root change"
+    },
+    {
+        "content": "function safeIsChildOf(address parent, address child, env e) returns bool {\n    // Bypass the requirement that parent be a member in `getChild`\n    if (!contains(parent)) {\n        return false;\n    }\n    return (getChild(e, parent, true) == child) || (getChild(e, parent, false) == child);\n}",
+        "type": "function",
+        "id": "safeIsChildOf",
+        "title": "Safe is child of",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ],
+        "return": {
+            "type": "bool"
+        }
+    },
+    {
+        "content": "function safeIsParentOf(address parent, address child, env e) returns bool {\n    // Bypass the requirement that child be a member in `getParent`\n    if (!contains(child)) {\n        return false;\n    }\n    return getParent(e, child) == parent;\n}",
+        "type": "function",
+        "id": "safeIsParentOf",
+        "title": "Safe is parent of",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ],
+        "return": {
+            "type": "bool"
+        }
+    },
+    {
+        "content": "invariant membershipGhost(address a)\n    isMember[a] == contains(a);",
+        "type": "invariant",
+        "id": "membershipGhost",
+        "title": "Membership ghost",
+        "params": [
+            {
+                "type": "address",
+                "name": "a"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Root is a member\ninvariant rootIsAMember()\n    contains(root());",
+        "type": "invariant",
+        "id": "rootIsAMember",
+        "title": "Root is a member"
+    },
+    {
+        "content": "/// @title Root has no parent\ninvariant rootHasNoParent(env e)\n    getParent(e, root()) == 0;",
+        "type": "invariant",
+        "id": "rootHasNoParent",
+        "title": "Root has no parent",
+        "params": [
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Root is no one's child\ninvariant rootIsNotChild(env e, address a)\n    !safeIsChildOf(a, root(), e);",
+        "type": "invariant",
+        "id": "rootIsNotChild",
+        "title": "Root is no one's child",
+        "params": [
+            {
+                "type": "env",
+                "name": "e"
+            },
+            {
+                "type": "address",
+                "name": "a"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Zero is not a member\ninvariant zeroIsNotAMember()\n    !contains(0);",
+        "type": "invariant",
+        "id": "zeroIsNotAMember",
+        "title": "Zero is not a member"
+    },
+    {
+        "content": "invariant childlessIsZero(address parent, bool isRight, env e)\n    !contains(getChild(e, parent, isRight)) => !hasChild(e, parent, isRight);",
+        "type": "invariant",
+        "id": "childlessIsZero",
+        "title": "Childless is zero",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "bool",
+                "name": "isRight"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "invariant childIsMember(address parent, bool isRight, env e)\n    contains(parent) => (\n        !hasChild(e, parent, isRight) || contains(getChild(e, parent, isRight))\n    ) {\n        preserved {\n            requireInvariant zeroIsNotAMember();\n        }\n    }",
+        "type": "invariant",
+        "id": "childIsMember",
+        "title": "Child is member",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "bool",
+                "name": "isRight"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "invariant parentIsMember(address child, env e)\n    (contains(child) && child != root()) => contains(getParent(e, child))\n    {\n        preserved {\n            requireInvariant zeroIsNotAMember();\n        }\n    }",
+        "type": "invariant",
+        "id": "parentIsMember",
+        "title": "Parent is member",
+        "params": [
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "invariant parentlessIsZero(address child, env e)\n    !contains(getParent(e, child)) => (getParent(e, child) == 0);",
+        "type": "invariant",
+        "id": "parentlessIsZero",
+        "title": "Parentless is zero",
+        "params": [
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "invariant parentlessIsRoot(address child, env e)\n    !contains(getParent(e, child)) <=> (child == root())\n    {\n        preserved {\n            requireInvariant parentlessIsZero(child, e);\n        }\n    }",
+        "type": "invariant",
+        "id": "parentlessIsRoot",
+        "title": "Parentless is root",
+        "params": [
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Child and parent point at each other\ninvariant chiledOfParent(address parent, address child, env e)\n    (contains(parent) && contains(child)) => (\n        safeIsChildOf(parent, child, e) <=> safeIsParentOf(parent, child, e)\n    ) {\n        preserved {\n            requireInvariant zeroIsNotAMember();\n            requireInvariant childlessIsZero(parent, false, e);\n            requireInvariant childlessIsZero(parent, true, e);\n        }\n    }",
+        "type": "invariant",
+        "id": "chiledOfParent",
+        "title": "Child and parent point at each other",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Child and parent are differrent\ninvariant childIsNotParent(address child, env e)\n    contains(child) => (getParent(e, child) != child)\n    {\n        preserved {\n            requireInvariant zeroIsNotAMember();\n        }\n    }",
+        "type": "invariant",
+        "id": "childIsNotParent",
+        "title": "Child and parent are differrent",
+        "params": [
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Verifies the `isChildOf` ghost\ninvariant isChildOfIntegrity(address parent, address child, env e)\n    (\n        child != 0 && safeIsChildOf(parent, child, e)\n    ) <=> isChildOf[parent][child]\n    {\n        preserved {\n            requireInvariant childIsMember(parent, true, e);\n            requireInvariant childIsMember(parent, false, e);\n            requireInvariant onlyLegalChildUpdates();\n        }\n    }",
+        "type": "invariant",
+        "id": "isChildOfIntegrity",
+        "title": "Verifies the `isChildOf` ghost",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Every non-root member has a parent\ninvariant allChildrenHaveParents(env e, address child)\n    (contains(child) && (child != root())) => contains(getParent(e, child));",
+        "type": "invariant",
+        "id": "allChildrenHaveParents",
+        "title": "Every non-root member has a parent",
+        "params": [
+            {
+                "type": "env",
+                "name": "e"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Integrity of root mirror\ninvariant rootMirrorIsRoot()\n    root() == rootMirror;",
+        "type": "invariant",
+        "id": "rootMirrorIsRoot",
+        "title": "Integrity of root mirror"
+    },
+    {
+        "content": "/// @title All memebrs are reachable from the root\ninvariant rootReachesAll(address a)\n    contains(a) <=> rootReachable[a]\n    {\n        preserved {\n            requireInvariant rootMirrorIsRoot();\n        }\n        preserved join(address child, bool isRight) with (env ejoin) {\n            requireInvariant rootMirrorIsRoot();\n            requireInvariant rootReachesAll(ejoin.msg.sender);\n            requireInvariant isChildOfIntegrity(ejoin.msg.sender, child, ejoin);\n        }\n    }",
+        "type": "invariant",
+        "id": "rootReachesAll",
+        "title": "All memebrs are reachable from the root",
+        "params": [
+            {
+                "type": "address",
+                "name": "a"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Varifies `isParentOf` ghost\ninvariant isParentOfIntegrity(address parent, address child, env e)\n    (parent != 0) => (isParentOf[parent][child] <=> safeIsParentOf(parent, child, e))\n    {\n        preserved {\n            requireInvariant parentIsMember(child, e);\n            requireInvariant onlyLegalParentUpdates();\n        }\n    }",
+        "type": "invariant",
+        "id": "isParentOfIntegrity",
+        "title": "Varifies `isParentOf` ghost",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "/// @title Root is ancestor of all\ninvariant rootIsAncestor(address a)\n    contains(a) <=> isRootAncestor[a]\n    {\n        preserved {\n            requireInvariant rootMirrorIsRoot();\n        }\n        preserved join(address child, bool isRight) with (env ejoin) {\n            requireInvariant rootMirrorIsRoot();\n            requireInvariant rootIsAncestor(ejoin.msg.sender);\n            requireInvariant isParentOfIntegrity(ejoin.msg.sender, child, ejoin);\n        }\n    }",
+        "type": "invariant",
+        "id": "rootIsAncestor",
+        "title": "Root is ancestor of all",
+        "params": [
+            {
+                "type": "address",
+                "name": "a"
+            }
+        ]
+    },
+    {
+        "content": "invariant nonMembersAreParentless(address parent, address child, env e)\n    ((parent != 0) && !contains(child)) => !isParentOf[parent][child]\n    {\n        preserved {\n            requireInvariant isParentOfIntegrity(parent, child, e);\n        }\n    }",
+        "type": "invariant",
+        "id": "nonMembersAreParentless",
+        "title": "Non members are parentless",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "invariant hasParentIsMember(address parent, address child, env e)\n    isParentOf[parent][child] => contains(child)\n    {\n        preserved {\n            requireInvariant isParentOfIntegrity(parent, child, e);\n        }\n    }",
+        "type": "invariant",
+        "id": "hasParentIsMember",
+        "title": "Has parent is member",
+        "params": [
+            {
+                "type": "address",
+                "name": "parent"
+            },
+            {
+                "type": "address",
+                "name": "child"
+            },
+            {
+                "type": "env",
+                "name": "e"
+            }
+        ]
+    },
+    {
+        "content": "invariant parentFracIsPositive()\n    parentFrac() > 0;",
+        "type": "invariant",
+        "id": "parentFracIsPositive",
+        "title": "Parent frac is positive"
+    },
+    {
+        "content": "invariant onlyLegalChildUpdates()\n    !illegalChildUpdate;",
+        "type": "invariant",
+        "id": "onlyLegalChildUpdates",
+        "title": "Only legal child updates"
+    },
+    {
+        "content": "invariant onlyLegalParentUpdates()\n    !illegalParentUpdate\n    {\n        preserved join(address child, bool isRight) with (env ejoin) {\n            requireInvariant zeroIsNotAMember();\n            requireInvariant nonMembersAreParentless(ejoin.msg.sender, child, ejoin);\n            requireInvariant hasParentIsMember(ejoin.msg.sender, child, ejoin);\n        }\n    }",
+        "type": "invariant",
+        "id": "onlyLegalParentUpdates",
+        "title": "Only legal parent updates"
+    },
+    {
+        "content": "invariant onlyLegalRootChanges()\n    !illegalRootChange;",
+        "type": "invariant",
+        "id": "onlyLegalRootChanges",
+        "title": "Only legal root changes"
+    }
+]
