@@ -29,23 +29,38 @@ Additional features:
 pragma solidity ^0.8.13;
 
 
-/// @title Reduced ERC721 interface (NFT)
-interface IERC721 {
+/// @title Reduced ERC721 (NFT)
+contract ERC721Mock {
+    // Ownership of tokens token-id -> owner
+    mapping(uint256 => address) private ownership;
+  
     function transferFrom(
-        address,
-        address,
-        uint
-    ) external;
+        address from,
+        address to,
+        uint256 tokenId
+    ) external {
+        require(ownership[tokenId] == from);
+        ownership[tokenId] = to;
+    }
 }
 
 
-/// @title Reduced ERC20 interface (token)
-interface IERC20 {
+/// @title Reduced ERC20 (token)
+contract ERC20Mock {
+    mapping(address => uint256) private balances;
+
     function transferFrom(
         address from,
         address to,
         uint amount
-    ) external returns(bool);
+    ) external returns (bool) {
+        if (balances[from] < amount) {
+            return false;
+        }
+        balances[from] -= amount;
+        balances[to] += amount;
+        return true;
+    }
 }
 
 
@@ -56,8 +71,8 @@ contract EnglishAuction {
     event Withdraw(address indexed bidder, uint amount);
     event End(address winner, uint amount);
 
-    IERC721 public nft;  // The auctioned NFT
-    IERC20 public token;  // Accepted token for bidding
+    ERC721Mock public nft;  // The auctioned NFT
+    ERC20Mock public token;  // Accepted token for bidding
     uint public nftId;
 
     address payable public seller;  // The seller of the NFT
@@ -79,10 +94,10 @@ contract EnglishAuction {
         uint _nftId,
         uint _startingBid
     ) {
-        nft = IERC721(_nft);
+        nft = ERC721Mock(_nft);
         nftId = _nftId;
 
-        token = IERC20(_erc20);
+        token = ERC20Mock(_erc20);
 
         seller = payable(msg.sender);
         highestBid = _startingBid;
@@ -123,7 +138,10 @@ contract EnglishAuction {
         require(block.timestamp < endAt, "ended");
         uint previousBid = highestBid;
         
-        require(token.transferFrom(payer, address(this), amount), "token transfer failed");
+        require(
+            token.transferFrom(payer, address(this), amount),
+            "token transfer failed"
+        );
 
         bids[bidder] += amount;
         highestBidder = bidder;
