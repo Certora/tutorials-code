@@ -1,0 +1,299 @@
+-e 
+
+
+########### New execution ##########
+
+
+
+-e 
+
+
+########### Started on Wed Sep 13 11:52:43 CEST 2023  ##########
+
+
+
+c811e4c9a971ccf4d2901e633b8b122b44a280d0
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-FunctionalAccountingProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/589b802bed9447f99cece7c32e71a41a?anonymousKey=2262cba1db3ee5c1bf0b4173094f0e68397a569b
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-InflationAttack.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/6b07f818e8cb45c684dc26a641db900a?anonymousKey=a5bee64bcf1b9a84dd8a2edcd37cd827c451abb0
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-MonotonicityInvariant.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/0a010c866c1e45a58c7e026bbc86fdcd?anonymousKey=754ccffdf7256cb161fe3020e4439c17aec40235
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-MustNotRevertProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/fa11af735c9e405b9da26f577be17a27?anonymousKey=88b2dbbe94f5f8d83f22c09b4307e43a4e4ac3dc
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-OZ-Modular.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+ERROR: Failed to compile spec file in /Users/johannesspath/Documents/Git/tutorials-code/lesson4_reading/erc4626/.certora_internal/23_09_13_11_53_11_441
+CRITICAL: Found errors
+CRITICAL: [main] ERROR ALWAYS - Error in spec file (ERC4626-MonotonicityInvariant.spec:8:5): External method declaration for ERC20Mock.totalAssets() returns (uint256) does not correspond to any known declaration. Did you mean to add optional?
+CRITICAL: [main] ERROR ALWAYS - Error in spec file (ERC4626-MonotonicityInvariant.spec:9:5): External method declaration for ERC20Mock.previewMint(uint256) returns (uint256) does not correspond to any known declaration. Did you mean to add optional?
+CRITICAL: [main] ERROR ALWAYS - Error in spec file (ERC4626-MonotonicityInvariant.spec:10:5): External method declaration for ERC20Mock.previewWithdraw(uint256) returns (uint256) does not correspond to any known declaration. Did you mean to add optional?
+CRITICAL: [main] ERROR ALWAYS - Error in spec file (ERC4626-MonotonicityInvariant.spec:11:5): External method declaration for ERC20Mock.previewDeposit(uint256) returns (uint256) does not correspond to any known declaration. Did you mean to add optional?
+CRITICAL: [main] ERROR ALWAYS - Error in spec file (ERC4626-MonotonicityInvariant.spec:12:5): External method declaration for ERC20Mock.previewRedeem(uint256) returns (uint256) does not correspond to any known declaration. Did you mean to add optional?
+CRITICAL: Encountered an error running Certora Prover:
+CVL specification syntax and type check failed
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-RedeemUsingApprovalProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+CRITICAL: Encountered an error running Certora Prover:
+/Users/johannesspath/Documents/Git/CVT-Executables-Mac/solc8.0 had an error:
+ParserError: Source file requires different compiler version (current compiler is 0.8.0+commit.c7dfd78e.Darwin.appleclang) - note that nightly builds are considered to be strictly less than the released version
+ --> /Users/johannesspath/Documents/Git/tutorials-code/lesson4_reading/erc4626/src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol:2:1:
+  |
+2 | pragma solidity ^0.8.20;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-RoundingProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/29948ba728864a2b93b3d6812aa10d2d?anonymousKey=375a4cae866ffca3428f7ab4cf7470b4ed9c24b7
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-SecurityProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/e9377ba043224b559c83d3f52d1114f5?anonymousKey=a548d58ad295e43982dc7fc3ecc70020db8b3e40
+-e 
+
+
+########### New execution ##########
+
+
+
+-e 
+
+
+########### Started on Wed Sep 13 12:00:23 CEST 2023  ##########
+
+
+
+c811e4c9a971ccf4d2901e633b8b122b44a280d0
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-FunctionalAccountingProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/f44d98f7305f435797b931b57396c735?anonymousKey=b3e9cebeb330d1e5959d36848201f73b19fb5c5c
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-InflationAttack.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/745442ce1b9442aca9a15f0e3cde02e0?anonymousKey=817ecf59c8c7d23f9f111156957d9311beed67d5
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-MonotonicityInvariant.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/1e1631c22fea44e49dc7bd6cf1e4b5cf?anonymousKey=a21f4188243af37140fddc1c7dcb41ed3da3029d
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-MustNotRevertProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/5ef8c739d82a4442a4c03b17bcca8e90?anonymousKey=84b13caf75cbdab928207f495a29e1a7c9a9df03
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-RedeemUsingApprovalProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/8a1bb2ec704d4327abfb6f91f5e4fab2?anonymousKey=6341584b2bad4b2f78933381a1fdd813a4ff9456
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-RoundingProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/d84eb38292ff457fb97fb695fe2d8156?anonymousKey=6f5a93f867b930e40e2cb2ee515fc7f8bec9aa44
+-e 
+
+
+
+-e Results for ./src/certora/conf-openzeppelin/certoraRun-SecurityProps.conf can be found at:
+WARNING: Default package file package.json not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+WARNING: Default package file remappings.txt not found, external contract dependencies could be unresolved. Ignore if solc invocation was successful
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC20Mock.sol to expose internal function information...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol...
+Compiling src/openzeppelin-9ef69c0/contracts/mocks/token/ERC4626Mock.sol to expose internal function information...
+
+Connecting to server...
+
+[32mJob submitted to server[0m
+
+Follow your job at https://prover.certora.com
+Once the job is completed, the results will be available at https://prover.certora.com/output/53900/3d3ae3662478429eacd8eb58a203271a?anonymousKey=a6b78821c940f3c410ef8eaeee865dd347510705
