@@ -12,7 +12,7 @@ function isLegalEncoding(uint256 encoded) returns bool {
 }
 
 
-/// @title Persistent ghost updated by legality of string encoding is legal
+/// Persistent ghost denoting legality of string encoding
 persistent ghost bool legalStr;
 
 
@@ -38,7 +38,7 @@ rule VerifyPush(uint256 xx, string yy) {
 }
 
 
-/// @title An example of `VerifyPush` where string
+/// @title An example of reverting due to bad string
 rule VerifyPushExample(uint256 xx, string yy) {
     legalStr = true;
 
