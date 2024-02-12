@@ -11,7 +11,7 @@
  * Understand the counter example provided by the Prover and then run the fixed
  * spec:
  *
- * certoraRun ERC20.sol: --verify ERC20:ERC20Fixed.spec --solc solc8.0
+ * certoraRun ERC20.sol --verify ERC20:ERC20Fixed.spec --solc solc8.0
  */
 
 // The methods block below gives various declarations regarding solidity methods.
