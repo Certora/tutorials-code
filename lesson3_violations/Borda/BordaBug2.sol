@@ -30,7 +30,7 @@ contract Borda is IBorda{
         voteTo(s, 2);
         voteTo(t, 1);
 
-        voteTo(_owner,2); //give also point to the owner...
+        voteTo(_owner,2); // give also points to the owner...
     }
 
     function voteTo(address c, uint256 p) private {
