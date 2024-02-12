@@ -147,7 +147,7 @@ contract EnglishAuction {
         highestBidder = bidder;
         highestBid = bids[highestBidder];
 
-        require(bids[highestBidder] > previousBid, "new high value < highest");
+        require(bids[highestBidder] > previousBid, "new high value > highest");
         emit Bid(bidder, amount);
     }
 
