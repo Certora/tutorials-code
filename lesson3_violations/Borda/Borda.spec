@@ -175,9 +175,8 @@ rule oneCanVote(address f, address s, address t) {
     vote@withrevert(e, f, s, t);
     bool reverted = lastReverted;
 
-    //TODO: it is not clear to me what the part "or same candidates" should mean exactly in the error message. Do you mean "...and all values for f,s,t differ." or negated "... or at least two values of f,s,t are the same."?
     assert (  overflowCheck && !_voted && f!=s && s!=t && f!=t ) 
-            <=>  !reverted, "a user who hasn't yet voted should be able to do so unless there is an overflow or same candidates ";
+            <=>  !reverted, "a user who hasn't yet voted should be able to do so unless there is an overflow for some candidate(s)";
 }
 
 
