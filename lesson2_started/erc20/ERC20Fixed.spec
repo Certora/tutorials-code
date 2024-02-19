@@ -24,17 +24,16 @@ methods
 rule transferSpec(address recipient, uint amount) {
 
     env e;
+    address sender = e.msg.sender;  // A convenient alias
     
     // `mathint` is a type that represents an integer of any size
-    mathint balance_sender_before = balanceOf(e.msg.sender);
+    mathint balance_sender_before = balanceOf(sender);
     mathint balance_recip_before = balanceOf(recipient);
 
     transfer(e, recipient, amount);
 
-    mathint balance_sender_after = balanceOf(e.msg.sender);
+    mathint balance_sender_after = balanceOf(sender);
     mathint balance_recip_after = balanceOf(recipient);
-
-    address sender = e.msg.sender;  // A convenient alias
 
     // Operations on mathints can never overflow or underflow. 
     assert recipient != sender => balance_sender_after == balance_sender_before - amount,

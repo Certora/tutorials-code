@@ -7,12 +7,12 @@
  *
  * First run only the rule `totalSupplyAfterMint`:
  *
- * certoraRun ERC20.sol --verify ERC20:TotalGreaterThanUser.spec --solc --rule totalSupplyAfterMint
+ * certoraRun ERC20.sol --verify ERC20:TotalGreaterThanUser.spec --solc solc8.0 --rule totalSupplyAfterMint
  *
  * This rule will fail due to the Prover's tendency to over-approximate the states.
  * Now run the fixed rule `totalSupplyAfterMintWithPrecondition`:
  *
- * certoraRun ERC20.sol --verify ERC20:TotalGreaterThanUser.spec --solc --rule totalSupplyAfterMintWithPrecondition
+ * certoraRun ERC20.sol --verify ERC20:TotalGreaterThanUser.spec --solc solc8.0 --rule totalSupplyAfterMintWithPrecondition
  *
  * Do you understand why the second rule passed?
  */
