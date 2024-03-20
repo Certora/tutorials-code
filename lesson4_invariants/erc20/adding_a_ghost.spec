@@ -13,7 +13,7 @@ ghost mathint sumBalances {
     init_state axiom sumBalances == 0;
 }
 
-hook Sstore balanceOf[KEY address user] uint256 newBalance (uint256 oldBalance) STORAGE
+hook Sstore balanceOf[KEY address user] uint256 newBalance (uint256 oldBalance)
 {
     sumBalances = sumBalances + newBalance - oldBalance;
 }

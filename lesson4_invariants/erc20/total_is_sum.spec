@@ -22,7 +22,7 @@ ghost mathint sumBalances {
     );
 }
 
-hook Sstore balanceOf[KEY address user] uint256 newBalance (uint256 oldBalance) STORAGE
+hook Sstore balanceOf[KEY address user] uint256 newBalance (uint256 oldBalance)
 {
     sumBalances = sumBalances + newBalance - oldBalance;
     balanceOfMirror[user] = newBalance;

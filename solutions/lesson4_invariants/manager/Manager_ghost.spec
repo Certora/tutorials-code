@@ -14,7 +14,7 @@ methods {
 ghost mapping(address => uint256) managersFunds;
 
 
-hook Sstore funds[KEY uint256 fundId].(offset 0) address newManager STORAGE {
+hook Sstore funds[KEY uint256 fundId].(offset 0) address newManager {
     managersFunds[newManager] = fundId;
 }
 

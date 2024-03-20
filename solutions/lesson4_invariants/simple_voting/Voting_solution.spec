@@ -32,7 +32,7 @@ ghost bool someoneVoted;
 
 // ---- Hooks ------------------------------------------------------------------
 
-hook Sstore _hasVoted[KEY address voter] bool newVal (bool oldVal) STORAGE {
+hook Sstore _hasVoted[KEY address voter] bool newVal (bool oldVal) {
 
     if (!oldVal && newVal) {
         numVoted = numVoted + 1;
