@@ -13,7 +13,7 @@
 
 ghost imp() returns bool;
 
-hook Sstore _map[KEY uint256 i] uint8 newVal (uint8 oldVal) STORAGE {
+hook Sstore _map[KEY uint256 i] uint8 newVal (uint8 oldVal) {
     havoc imp assuming (oldVal == 0 && newVal > 0) => imp@new();
 }
 
@@ -42,7 +42,7 @@ ghost imp() returns bool {
     init_state axiom !imp();
 }
 
-hook Sstore _map[KEY uint256 i] uint8 newVal (uint8 oldVal) STORAGE {
+hook Sstore _map[KEY uint256 i] uint8 newVal (uint8 oldVal) {
     havoc imp assuming (
         ( (oldVal == 0 && newVal > 0) => imp@new() ) &&
         (!(oldVal == 0 && newVal > 0) => imp@old() == imp@new() )
@@ -74,7 +74,7 @@ rule someRule(method f) {
 // First example ===============================================================
 ghost imp(uint256) returns bool;
 
-hook Sstore _map[KEY uint256 i][KEY uint128 j] uint8 newVal (uint8 oldVal) STORAGE {
+hook Sstore _map[KEY uint256 i][KEY uint128 j] uint8 newVal (uint8 oldVal) {
     havoc imp assuming (oldVal == 0 && newVal > 0) => imp@new(i);
 }
 
@@ -98,7 +98,7 @@ ghost imp(uint256) returns bool {
     init_state axiom forall uint256 i. !imp(i);
 }
 
-hook Sstore _map[KEY uint256 i][KEY uint128 j] uint8 newVal (uint8 oldVal) STORAGE {
+hook Sstore _map[KEY uint256 i][KEY uint128 j] uint8 newVal (uint8 oldVal) {
     havoc imp assuming (
         ( (oldVal == 0 && newVal > 0) <=> imp@new(i) ) &&
         ( forall uint256 k. k != i => !imp@new(k) )
