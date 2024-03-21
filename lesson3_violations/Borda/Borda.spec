@@ -224,16 +224,16 @@ ghost mathint sumPoints {
 }
 
 /* update ghost on changes to _points */
-hook Sstore _points[KEY address a] uint256 new_points (uint256 old_points) STORAGE {
+hook Sstore _points[KEY address a] uint256 new_points (uint256 old_points) {
   points_mirror[a] = new_points;
   sumPoints = sumPoints + new_points - old_points;
 }
 
-hook Sload uint256 curr_point _points[KEY address a]  STORAGE {
+hook Sload uint256 curr_point _points[KEY address a] {
   require points_mirror[a] == curr_point;
 }
 
-hook Sstore _voted[KEY address a] bool val (bool old_val) STORAGE {
+hook Sstore _voted[KEY address a] bool val (bool old_val) {
   countVoters = countVoters +1;
 }
 
@@ -252,4 +252,4 @@ rule resolvabilityCriterion(address f, address s, address t, address tie) {
   Each voter contribute a total of 6 points, so the sum of all points is six time the number of voters 
 */
 invariant sumOfPoints() 
-    sumPoints == countVoters * 6; 
+    sumPoints == countVoters * 6;

@@ -15,7 +15,7 @@ ghost mathint numVoted {
 }
 
 hook Sstore _hasVoted[KEY address voter]
-    bool newVal (bool oldVal) STORAGE {
+    bool newVal (bool oldVal) {
     numVoted = numVoted + 1;
 }
 

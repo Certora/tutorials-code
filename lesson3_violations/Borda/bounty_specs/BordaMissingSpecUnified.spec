@@ -19,7 +19,7 @@ ghost mapping(address => bool) voted_mirror {
 	init_state axiom forall address c. !voted_mirror[c];
 }
 
-hook Sstore _voted[KEY address a] bool val (bool old_val) STORAGE {
+hook Sstore _voted[KEY address a] bool val (bool old_val) {
 	voted_mirror[a] = val;
 }
 

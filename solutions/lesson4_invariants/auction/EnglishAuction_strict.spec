@@ -18,7 +18,7 @@ ghost bool _hasAnyoneBid {
     init_state axiom !_hasAnyoneBid;
 }
 
-hook Sstore bids[KEY address bidder] uint newAmount (uint oldAmount) STORAGE {
+hook Sstore bids[KEY address bidder] uint newAmount (uint oldAmount) {
     _hasAnyoneBid = _hasAnyoneBid || (newAmount > 0);
 }
 
