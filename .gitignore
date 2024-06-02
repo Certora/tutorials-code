@@ -13,3 +13,5 @@
 # vim
 .*.swp
 .*.swo
+
+emv-*
