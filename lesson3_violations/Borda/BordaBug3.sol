@@ -9,7 +9,7 @@ contract Borda is IBorda{
     // A map storing whether an address has already voted. Initialized to false.
     mapping (address => bool)  _voted;
 
-    // Points each candidate has recieved, initialized to zero.
+    // Points each candidate has received, initialized to zero.
     mapping (address => uint256) _points;
 
     address private _blacklisted  ;
