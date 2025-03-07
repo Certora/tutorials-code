@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
  * 
  * The election system follows the following rules:
  *
- * - Every user with an Etheruem address is allowed to vote in the election.
+ * - Every user with an Ethereum address is allowed to vote in the election.
  * - A voter may vote to 3 distinct contenders at once. 
  * - The voter's 1st choice gets 3 points, their 2nd choice gets 2 points, and their 3rd
  *   choice gets 1 point.
